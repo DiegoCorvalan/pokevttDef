@@ -1,0 +1,74 @@
+{
+  "Actor": {
+    "types": ["entrenador", "pokemon"],
+    "templates": {
+      "base": {
+        "vida": {
+          "value": 0,
+          "min": 0,
+          "max": 3,
+          "bono":0
+        },       
+        "defensa": {
+          "value": 4,
+          "bono":0
+        },
+        "Historia": ""
+      }
+    },
+    "entrenador": {
+      "templates": ["base"],
+      "attributes": {
+        "medalla": {
+          "value": 1
+        }
+      },
+      "abilities": {
+        "fue": {
+          "value": -2
+        },
+        "des": {
+          "value": -2
+        },
+        "int": {
+          "value": -2
+        }
+      }
+    },
+    "pokemon": {
+      "templates": ["base"],
+      "level": 1,
+      "abilities": {
+        "fue": {
+          "value": -2,
+          "bono":0
+        },
+        "des": {
+          "value": -2,
+          "bono":0
+        },
+        "int": {
+          "value": -2,
+          "bono":0
+        }
+      }
+    }
+  },
+  "Item": {
+    "types": ["item", "feature"],
+    "templates": {
+      "base": {
+        "description": ""
+      }
+    },
+    "item": {
+      "templates": ["base"],
+      "quantity": 1,
+      "weight": 0
+    },
+    "feature": {
+      "templates": ["base"],
+      "formula": "d10"
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "POKEVTT": {
+    "Ability": {
+      "fue": { "long": "Fuerza", "abbr": "fue" },
+      "des": { "long": "Destreza", "abbr": "des" },
+      "Int": { "long": "Inteligencia", "abbr": "int" }
+    },
+    "SheetLabels": {
+      "Actor": "Pokevtt Actor Sheet",
+      "Item": "Pokevtt Item Sheet"
+    },
+    "Item": {
+    },
+    "Effect": {
+      "Source": "Source",
+      "Toggle": "Toggle Effect",
+      "Temporary": "Temporary Effects",
+      "Passive": "Passive Effects",
+      "Inactive": "Inactive Effects"
+    }
+  },
+
+  "TYPES": {
+    "Actor": {
+      "entrenador": "Entrenador",
+      "pokemon": "Pokemon"
+    },
+    "Item": {
+      "item": "Item",
+      "feature": "Feature"
+    }
+  }
+}

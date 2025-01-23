@@ -1,0 +1,45 @@
+{
+  "id": "pokevtt",
+  "title": "Pokevtt",
+  "description": "The Pokevtt system for FoundryVTT!",
+  "authors": [
+    {
+      "name": "Piña",
+      "discord": "Piña"
+    }
+  ],
+  "url": "Replace this with a link to your public repository",
+  "license": "LICENSE.txt",
+  "readme": "README.md",
+  "bugs": "Replace this with a link to file issues or tickets",
+  "changelog": "CHANGELOG.md",
+  "media": [
+    {
+      "type": "setup",
+      "url": "systems/pokevtt/assets/anvil-impact.png",
+      "thumbnail": "systems/pokevtt/assets/anvil-impact.png"
+    }
+  ],
+  "version": "2.0.0",
+  "compatibility": {
+    "minimum": 11,
+    "verified": "11.315"
+  },
+  "esmodules": ["module/pokevtt.mjs"],
+  "styles": ["css/pokevtt.css"],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "packs": [],
+  "packFolders": [],
+  "socket": false,
+  "background": "systems/pokevtt/assets/anvil-impact.png",
+  "gridDistance": 5,
+  "gridUnits": "ft",
+  "primaryTokenAttribute": "vida",
+  "secondaryTokenAttribute": "power"
+}

@@ -1,0 +1,100 @@
+<form class="{{cssClass}} {{actor.type}} flexcol" autocomplete="off">
+
+  {{!-- Sheet Header --}}
+  <header class="sheet-header">
+    <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100"/>
+    <div class="header-fields">
+      <h1 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="Name"/></h1>
+      <div class="resources grid grid-3col">
+        <div class="resource flex-group-center">
+          <label for="system.vida.value" class="resource-label">Vida</label>
+          <div class="resource-content flexrow flex-center flex-between">
+            <div class="hidden-content" style="display: none;">
+            <input type="text" name="system.vida.value" value="{{system.vida.value}}" data-dtype="Number"/>
+            </div>
+            <input type="text" name="system.vida.bono" value="{{system.vida.bono}}" data-dtype="Number"/>
+            <input type="text" name="system.vida.max" value="{{system.vida.max}}" data-dtype="Number"/>
+            <span> / </span>
+            <input type="text" disabled="true" name="system.vida.final" value="{{system.vida.final}}" data-dtype="Number"/>
+          </div>
+        </div>
+        <div class="resource flex-group-center">
+          <label for="system.defensa.value" class="resource-label">Defensa</label>
+          <div class="resource-content flexrow flex-center flex-between">
+            <div class="hidden-content" style="display: none;">
+              <input type="text" name="system.defensa.value" value="{{system.defensa.value}}" data-dtype="Number"/>
+            </div>
+            <input type="text" name="system.defensa.bono" value="{{system.defensa.bono}}" data-dtype="Number"/>
+            <input type="text" disabled="true" name="system.defensa.final" value="{{system.defensa.final}}" data-dtype="Number"/>
+          </div>
+        </div>
+        <div class="resource flex-group-center">
+          <label for="system.level" class="resource-label">Nivel</label>
+          <div class="resource-content flexrow flex-center flex-between">
+            <input type="text" name="system.level" value="{{system.level}}" data-dtype="Number"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  {{!-- Sheet Tab Navigation --}}
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="features">Atributos</a>
+    <a class="item" data-tab="description">Pokedex</a>
+    <a class="item" data-tab="items">Movimientos</a>
+    <a class="item" data-tab="effects">Efectos</a>
+  </nav>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+        {{!-- Owned Features Tab --}}
+    <div class="tab features" data-group="primary" data-tab="features">
+      <section class="grid grid-3col">
+        <aside class="sidebar">
+
+          {{!-- The grid classes are defined in scss/global/_grid.scss. To use,
+          use both the "grid" and "grid-Ncol" class where "N" can be any number
+          from 1 to 12 and will create that number of columns.  --}}
+          <div class="abilities flexcol">
+            {{#each system.abilities as |ability key|}}
+            <div class="ability flexrow flex-group-center">
+              <label for="system.abilities.{{key}}.value" class="resource-label rollable flexlarge align-left" data-roll="d10+@abilities.{{key}}.mod" data-label="{{localize (lookup @root.config.abilities key)}}">{{localize (lookup @root.config.abilities key)}}</label>
+              <div class="hidden-content" style="display: none;">
+              <input type="text" name="system.abilities.{{key}}.value" value="{{ability.value}}" data-dtype="Number"/>
+              </div>
+              <input type="text" name="system.abilities.{{key}}.bono" value="{{ability.bono}}" data-dtype="Number"/>
+              <span class="ability-mod rollable" data-roll="d10+@abilities.{{key}}.mod" data-label="{{localize (lookup @root.config.abilities key)}}">{{numberFormat ability.mod decimals=0 sign=true}}</span>
+
+            </div>
+            {{/each}}
+          </div>
+        </aside>
+        <section class="main grid-span-2">
+          {{!-- This is a Handlebars partial. They're stored in the `/parts` folder next to this sheet, and defined in module/helpers/templates.mjs --}}
+          {{> "systems/pokevtt/templates/actor/parts/actor-features.hbs"}}
+        </section>
+        {{!-- For the main features list, span the right two columns --}}
+
+  
+    {{!-- Biography Tab --}}
+    <div class="tab biography" data-group="primary" data-tab="description">
+      {{!-- Editors must receive enriched text data from getData to properly handle rolls --}}
+      {{editor enrichedBiography target="system.biography" engine="prosemirror" button=true editable=editable}}
+    </div>
+
+    {{!-- Owned Items Tab --}}
+    <div class="tab items" data-group="primary" data-tab="items">
+       {{> "systems/pokevtt/templates/actor/parts/actor-items.hbs"}}
+    </div>
+
+    {{!-- Active Effects Tab --}}
+    <div class="tab effects flexcol" data-group="primary" data-tab="effects">
+      {{> "systems/pokevtt/templates/actor/parts/actor-effects.hbs"}}
+    </div>
+
+  </section>
+              <button id="editButton" class="small-button"></button>
+
+</form>
+
