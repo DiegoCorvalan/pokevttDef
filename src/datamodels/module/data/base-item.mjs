@@ -11,4 +11,4 @@ export default class PokevttItemBase extends PokevttDataModel {
     return schema;
   }
 
-}d
+}

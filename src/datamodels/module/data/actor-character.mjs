@@ -1,6 +1,6 @@
 import PokevttActorBase from "./base-actor.mjs";
 
-export default class PokevttCharacter extends PokevttActorBase {
+export default class PokevttEntrenador extends PokevttActorBase {
 
   static defineSchema() {
     const fields = foundry.data.fields;

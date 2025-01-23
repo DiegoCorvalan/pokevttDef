@@ -15,48 +15,56 @@
 
   {{!-- Sheet Body --}}
   <section class="sheet-body">
-
     {{!-- Description Tab --}}
     <div class="tab" data-group="primary" data-tab="description">
       {{!-- Editors must receive enriched text data from getData to properly handle rolls --}}
       {{editor enrichedDescription target="system.description" engine="prosemirror" button=true editable=editable}}
     </div>
 
-    <div class='tab attributes' data-group='primary' data-tab='attributes'>
-      {{! As you add new fields, add them in here! }}
-      <div class='resource'>
-        <label class='resource-label'>Daño</label>
-        <div class='grid grid-4col'>
-          <div class='grid-span-1'>
-            <label class='resource-label'>Cantidad de dados</label>
+    <div class="tab attributes" data-group="primary" data-tab="attributes">
+      <div class="resource">
+        <label class="resource-label">Daño</label>
+        <div class="grid grid-4col">
+          <div class="grid-span-1">
+            <label class="resource-label">Cantidad de dados</label>
             <input
-              type='text'
-              name='system.roll.diceNum'
-              value='{{system.roll.diceNum}}'
-              data-dtype='Number'
+              type="text"
+              name="system.roll.diceNum"
+              value="{{system.roll.diceNum}}"
+              data-dtype="Number"
             />
           </div>
-          <div class='grid-span-1'>
-            <label class='resource-label'>Dado</label>
+          <div class="grid-span-1">
+            <label class="resource-label">Dado</label>
             <input
-              type='text'
-              name='system.roll.diceSize'
-              value='{{system.roll.diceSize}}'
-              data-dtype='String'
+              type="text"
+              name="system.roll.diceSize"
+              value="{{system.roll.diceSize}}"
+              data-dtype="String"
             />
           </div>
-          <div class='grid-span-2'>
-            <label class='resource-label'>Modificador</label>
+          <div class="grid-span-2">
+            <label class="resource-label">Modificador</label>
             <span
-              type='text'
-              name='system.roll.diceBonus'
+              type="text"
+              name="system.roll.diceBonus"
               value="1"
-              data-dtype='String'
+              data-dtype="String"
             />
           </div>
         </div>
-
       </div>
+
+      {{!-- Selección de Atributo --}}
+      <div class="resource">
+        <label for="system.attributeModifier" class="resource-label">Atributo Modificador</label>
+        <select name="system.attributeModifier">
+          {{#each system.abilities as |ability key|}}
+            <option value="{{key}}">{{localize (lookup ../config.abilities key)}}</option>
+          {{/each}}
+        </select>
+      </div>
+
     </div>
   </section>
 

@@ -129,28 +129,6 @@ export class PokevttActorSheet extends ActorSheet {
   /** @override */
   activateListeners(html) {
     super.activateListeners(html);
-  
-    document.getElementById('editButton').addEventListener('click', function() {
-      // Selecciona todas las secciones de contenido oculto
-      const hiddenContents = document.querySelectorAll('.hidden-content');
-    
-      hiddenContents.forEach(hiddenContent => {
-        // Alterna la visibilidad de cada contenido oculto
-        if (hiddenContent.style.display === 'none') {
-          hiddenContent.style.display = 'block'; // Muestra el contenido
-        } else {
-          hiddenContent.style.display = 'none'; // Oculta el contenido
-        }
-      });
-    });
-    
-    // Render the item sheet for viewing/editing prior to the editable check.
-    html.on('click', '.item-edit', (ev) => {
-      const li = $(ev.currentTarget).parents('.item');
-      const item = this.actor.items.get(li.data('itemId'));
-      item.sheet.render(true);
-    });
-  // Inicializar el estado del botón como desactivado
 
     // -------------------------------------------------------------
     // Everything below here is only needed if the sheet is editable
@@ -179,6 +157,38 @@ export class PokevttActorSheet extends ActorSheet {
 
     // Rollable abilities.
     html.on('click', '.rollable', this._onRoll.bind(this));
+
+    // *** Nuevo código para manejar las tiradas con atributo ***
+    html.on('click', '.use-item-button', async (event) => {
+      event.preventDefault();
+
+      // Obtener los valores del formulario
+      const diceNum = parseInt(html.find('[name="system.roll.diceNum"]').val(), 10) || 0;
+      const diceSize = html.find('[name="system.roll.diceSize"]').val();
+      const attributeKey = html.find('[name="system.attributeModifier"]').val();
+
+      // Obtener el valor del atributo seleccionado
+      const attributeValue = this.actor.system.abilities[attributeKey]?.value || 0;
+
+      // Realizar la primera tirada sin modificador
+      const roll1 = new Roll(`${diceNum}d${diceSize}`).roll();
+      const result1 = roll1.total;
+
+      // Realizar la segunda tirada con el atributo como modificador
+      const roll2 = new Roll(`${diceNum}d${diceSize}+${attributeValue}`).roll();
+      const result2 = roll2.total;
+
+      // Mostrar ambos resultados en el chat
+      roll1.toMessage({
+        flavor: `Tirada sin modificador (${diceNum}d${diceSize})`,
+        speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+      });
+
+      roll2.toMessage({
+        flavor: `Tirada con modificador de ${attributeKey} (${diceNum}d${diceSize}+${attributeValue})`,
+        speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+      });
+    });
 
     // Drag events for macros.
     if (this.actor.isOwner) {

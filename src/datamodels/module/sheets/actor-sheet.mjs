@@ -168,11 +168,22 @@ export class PokevttActorSheet extends ActorSheet {
     // Drag events for macros.
     if (this.actor.isOwner) {
       let handler = (ev) => this._onDragStart(ev);
-      html.find('li.item').each((i, li) => {
+      const items = html.find('li.item');
+      if (items.length === 0) {
+        console.warn("No se encontraron elementos 'li.item' en el DOM.");
+      }
+      
+      items.each((i, li) => {
         if (li.classList.contains('inventory-header')) return;
         li.setAttribute('draggable', true);
-        li.addEventListener('dragstart', handler, false);
+      
+        if (typeof handler === 'function') {
+          li.addEventListener('dragstart', handler, false);
+        } else {
+          console.error("El handler para 'dragstart' no está definido correctamente.");
+        }
       });
+      
     }
   }
 
