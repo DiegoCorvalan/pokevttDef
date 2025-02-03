@@ -29,6 +29,7 @@ export class PokevttItemSheet extends ItemSheet {
     const path = 'systems/pokevtt/templates/item';
     // Return a single sheet for all item types.
     // return `${path}/item-sheet.hbs`;
+    console.log("hola")
 
     // Alternatively, you could use the following return statement to do a
     // unique item sheet by type, like `weapon-sheet.hbs`.
@@ -44,6 +45,14 @@ export class PokevttItemSheet extends ItemSheet {
 
     // Use a safe clone of the item data for further operations.
     const itemData = this.document.toPlainObject();
+
+    // Obtener los datos del actor asociado al ítem
+    const actorData = this.item.actor?.system;
+
+    // Agregar atributos del actor al contexto
+    if (actorData) {
+      context.actorAttributes = actorData.abilities; // "abilities" es el nombre correcto según tu estructura
+    }
 
     // Enrich description info for display
     // Enrichment turns text like `[[/r 1d20]]` into buttons

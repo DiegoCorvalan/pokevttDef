@@ -19,7 +19,7 @@ export class PokevttActorSheet extends ActorSheet {
           navSelector: '.sheet-tabs',
           contentSelector: '.sheet-body',
           initial: 'features',
-        },
+        }, 
       ],
     });
   }

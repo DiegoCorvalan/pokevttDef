@@ -23,49 +23,18 @@
 
     <div class="tab attributes" data-group="primary" data-tab="attributes">
       <div class="resource">
-        <label class="resource-label">Daño</label>
-        <div class="grid grid-4col">
-          <div class="grid-span-1">
-            <label class="resource-label">Cantidad de dados</label>
-            <input
-              type="text"
-              name="system.roll.diceNum"
-              value="{{system.roll.diceNum}}"
-              data-dtype="Number"
-            />
-          </div>
-          <div class="grid-span-1">
-            <label class="resource-label">Dado</label>
-            <input
-              type="text"
-              name="system.roll.diceSize"
-              value="{{system.roll.diceSize}}"
-              data-dtype="String"
-            />
-          </div>
-          <div class="grid-span-2">
-            <label class="resource-label">Modificador</label>
-            <span
-              type="text"
-              name="system.roll.diceBonus"
-              value="1"
-              data-dtype="String"
-            />
-          </div>
-        </div>
+        <label class="resource-label">Nuevo Campo</label>
+        <input type="text" name="system.newField" value="{{system.newField}}" data-dtype="String" />
       </div>
 
-      {{!-- Selección de Atributo --}}
-      <div class="resource">
-        <label for="system.attributeModifier" class="resource-label">Atributo Modificador</label>
-        <select name="system.attributeModifier">
-          {{#each system.abilities as |ability key|}}
-            <option value="{{key}}">{{localize (lookup ../config.abilities key)}}</option>
-          {{/each}}
-        </select>
-      </div>
-
-    </div>
+  <div class="resource">
+    <label for="system.attributeModifier" class="resource-label">Atributo Modificador</label>
+    <select name="system.attributeModifier">
+      {{#each actorAttributes as |ability key|}}
+        <option value="{{key}}">{{localize (lookup ../config.abilities key)}}</option>
+      {{/each}}
+    </select>
+  </div>
   </section>
 
 </form>

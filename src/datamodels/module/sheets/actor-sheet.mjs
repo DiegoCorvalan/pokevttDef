@@ -227,6 +227,7 @@ export class PokevttActorSheet extends ActorSheet {
     // Handle item rolls.
     if (dataset.rollType) {
       if (dataset.rollType == 'item') {
+        console.log("hola")
         const itemId = element.closest('.item').dataset.itemId;
         const item = this.actor.items.get(itemId);
         if (item) return item.roll();

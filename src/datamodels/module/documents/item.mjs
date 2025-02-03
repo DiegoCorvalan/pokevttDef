@@ -16,15 +16,18 @@ export class PokevttItem extends Item {
    * Prepare a data object which defines the data schema used by dice roll commands against this Item
    * @override
    */
+  
   getRollData() {
     // Starts off by populating the roll data with a shallow copy of `this.system`
     const rollData = { ...this.system };
+    console.log("hola")
 
     // Quit early if there's no parent actor
     if (!this.actor) return rollData;
 
     // If present, add the actor's roll data
     rollData.actor = this.actor.getRollData();
+    console.log("hola")
 
     return rollData;
   }
