@@ -15,7 +15,7 @@
         and it will add a small amount of padding, a border, and will
         center all of its child elements content and text. --}}
         <div class="resource flex-group-center">
-          <label for="system.health.value" class="resource-label">Health</label>
+          <label for="system.health.value" class="resource-label">Vida</label>
           <div class="resource-content flexrow flex-center flex-between">
           <input type="text" name="system.health.value" value="{{system.health.value}}" data-dtype="Number"/>
           <span> / </span>
@@ -24,18 +24,11 @@
         </div>
 
         <div class="resource flex-group-center">
-          <label for="system.power.value" class="resource-label">Power</label>
+          <label for="system.power.value" class="resource-label">Estamina</label>
           <div class="resource-content flexrow flex-center flex-between">
           <input type="text" name="system.power.value" value="{{system.power.value}}" data-dtype="Number"/>
           <span> / </span>
           <input type="text" name="system.power.max" value="{{system.power.max}}" data-dtype="Number"/>
-          </div>
-        </div>
-
-        <div class="resource flex-group-center">
-          <label for="system.attributes.level.value" class="resource-label">Level</label>
-          <div class="resource-content flexrow flex-center flex-between">
-          <input type="text" name="system.attributes.level.value" value="{{system.attributes.level.value}}" data-dtype="Number"/>
           </div>
         </div>
 
@@ -46,11 +39,10 @@
   {{!-- Sheet Tab Navigation --}}
   <nav class="sheet-tabs tabs" data-group="primary">
     {{!-- Default tab is specified in actor-sheet.mjs --}}
-    <a class="item" data-tab="features">Features</a>
-    <a class="item" data-tab="description">Description</a>
-    <a class="item" data-tab="items">Items</a>
-    <a class="item" data-tab="effects">Effects</a>
-    <a class="item" data-tab="pokemon">Pokémon</a>
+    <a class="item" data-tab="features">Base</a>
+   <a class="item" data-tab="pokemon">Pokémon</a>
+       <a class="item" data-tab="items">Objetos</a>
+    <a class="item" data-tab="historia">Historia</a>
   </nav>
 
   {{!-- Sheet Body --}}
@@ -83,10 +75,9 @@
       </section>
     </div>
 
-    {{!-- Biography Tab --}}
-    <div class="tab biography" data-group="primary" data-tab="description">
-      {{!-- Editors must receive enriched text data from getData to properly handle rolls --}}
-      {{editor enrichedBiography target="system.biography" engine="prosemirror" button=true editable=editable}}
+    {{!-- Historia Tab --}}
+    <div class="tab historia" data-group="primary" data-tab="historia">
+      {{editor enrichedBiography target="system.historia" engine="prosemirror" button=true editable=editable}}
     </div>
 
     {{!-- Owned Items Tab --}}
@@ -103,7 +94,7 @@
       <div class="pokemon-container">
         <section class="equipo">
           <h2>Equipo</h2>
-          <div class="pokemon-list">
+          <div class="pokemon-list" data-count="{{system.equipo.length}}">
             {{#each system.equipo as |pokemonId|}}
               {{#with (getActor pokemonId) as |pokemon|}}
                 <div class="pokemon-entry" data-pokemon-id="{{pokemon._id}}">

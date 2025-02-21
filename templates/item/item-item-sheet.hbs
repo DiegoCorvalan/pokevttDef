@@ -61,38 +61,33 @@
     <div class='tab attributes' data-group='primary' data-tab='attributes'>
       {{! As you add new fields, add them in here! }}
       <div class='resource'>
-        <label class='resource-label'>Roll Formula:</label>
-        <span>{{system.formula}}</span>
-        <div class='grid grid-4col'>
-          <div class='grid-span-1'>
-            <label class='resource-label'>Number of Dice</label>
-            <input
-              type='text'
-              name='system.roll.diceNum'
-              value='{{system.roll.diceNum}}'
-              data-dtype='Number'
-            />
+        <label class='resource-label'>Tirada:</label>
+        <div class='grid grid-3col'>
+          <div>
+            <label class='resource-label'>Número de Dados</label>
+            <input 
+              type='number' 
+              name='system.roll.diceNum' 
+              value='{{system.roll.diceNum}}' 
+              min="0"
+              placeholder="0"/>
           </div>
-          <div class='grid-span-1'>
-            <label class='resource-label'>Die Size</label>
-            <input
-              type='text'
-              name='system.roll.diceSize'
-              value='{{system.roll.diceSize}}'
-              data-dtype='String'
-            />
+          <div>
+            <label class='resource-label'>Tipo de Dado</label>
+            <select name='system.roll.diceSize'>
+              <option value="d4" {{#if (eq system.roll.diceSize "d4")}}selected{{/if}}>d4</option>
+              <option value="d6" {{#if (eq system.roll.diceSize "d6")}}selected{{/if}}>d6</option>
+              <option value="d8" {{#if (eq system.roll.diceSize "d8")}}selected{{/if}}>d8</option>
+              <option value="d10" {{#if (eq system.roll.diceSize "d10")}}selected{{/if}}>d10</option>
+              <option value="d12" {{#if (eq system.roll.diceSize "d12")}}selected{{/if}}>d12</option>
+              <option value="d20" {{#if (eq system.roll.diceSize "d20")}}selected{{/if}}>d20</option>
+            </select>
           </div>
-          <div class='grid-span-2'>
-            <label class='resource-label'>Roll Modifier</label>
-            <input
-              type='text'
-              name='system.roll.diceBonus'
-              value='{{system.roll.diceBonus}}'
-              data-dtype='String'
-            />
+          <div>
+            <label class='resource-label'>Modificador</label>
+            <input type='text' name='system.roll.diceBonus' value='{{system.roll.diceBonus}}' placeholder="+0"/>
           </div>
         </div>
-
       </div>
     </div>
   </section>

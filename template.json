@@ -35,7 +35,8 @@
         }
       },
       "equipo": [],
-      "pc": []
+      "pc": [],
+      "historia": ""
     },
     "pokemon": {
       "templates": ["base"],
@@ -57,7 +58,8 @@
           "value": -2,
           "bono":0
         }
-      }
+      },
+      "pokedex": ""
     }
   },
   

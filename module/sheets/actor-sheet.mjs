@@ -33,14 +33,10 @@ export class PokevttActorSheet extends ActorSheet {
 
   /** @override */
   async getData() {
-    // Retrieve the data structure from the base sheet. You can inspect or log
-    // the context variable to see the structure, but some key properties for
-    // sheets are the actor object, the data object, whether or not it's
-    // editable, the items array, and the effects array.
     const context = super.getData();
 
     // Use a safe clone of the actor data for further operations.
-    const actorData = this.document.toObject(false);
+    const actorData = this.actor.toObject(false);
 
     // Add the actor's data to context.data for easier access, as well as flags.
     context.system = actorData.system;
@@ -49,7 +45,7 @@ export class PokevttActorSheet extends ActorSheet {
     // Adding a pointer to CONFIG.POKEVTT
     context.config = CONFIG.POKEVTT;
 
-    // Prepare entrenador data and items.
+    // Prepare character data and items.
     if (actorData.type == 'entrenador') {
       this._prepareItems(context);
       this._prepareEntrenadorData(context);
@@ -58,30 +54,28 @@ export class PokevttActorSheet extends ActorSheet {
     // Prepare Pokemon data and items.
     if (actorData.type == 'pokemon') {
       this._prepareItems(context);
+      // Enrich the pokedex text
+      context.enrichedPokedex = await TextEditor.enrichHTML(this.actor.system.pokedex, {
+        secrets: this.actor.isOwner,
+        async: true,
+        relativeTo: this.actor,
+        rollData: context.rollData
+      });
     }
 
-    // Enrich biography info for display
-    // Enrichment turns text like `[[/r 1d20]]` into buttons
-    context.enrichedBiography = await TextEditor.enrichHTML(
-      this.actor.system.biography,
-      {
-        // Whether to show secret blocks in the finished html
-        secrets: this.document.isOwner,
-        // Necessary in v11, can be removed in v12
-        async: true,
-        // Data to fill in for inline rolls
-        rollData: this.actor.getRollData(),
-        // Relative UUID resolution
-        relativeTo: this.actor,
-      }
-    );
+    // Add roll data for TinyMCE editors.
+    context.rollData = context.actor.getRollData();
 
     // Prepare active effects
-    context.effects = prepareActiveEffectCategories(
-      // A generator that returns all effects stored on the actor
-      // as well as any items
-      this.actor.allApplicableEffects()
-    );
+    context.effects = prepareActiveEffectCategories(this.actor.effects);
+
+    // Enrich the biography text
+    context.enrichedBiography = await TextEditor.enrichHTML(this.actor.system.historia, {
+      secrets: this.actor.isOwner,
+      async: true,
+      relativeTo: this.actor,
+      rollData: context.rollData
+    });
 
     return context;
   }
@@ -305,8 +299,25 @@ export class PokevttActorSheet extends ActorSheet {
     // Agregar Pokémon
     html.find('.add-pokemon').click(async (ev) => {
       const destination = ev.currentTarget.dataset.destination;
-      const pokemonActors = game.actors.filter(a => a.type === 'pokemon' && !this.actor.system[destination].includes(a.id));
       
+      // Verificar límite del equipo
+      if (destination === 'equipo' && this.actor.system.equipo.length >= 4) {
+        ui.notifications.warn("El equipo no puede tener más de 4 Pokémon");
+        return;
+      }
+
+      // Filtrar solo Pokémon que el jugador puede ver y controlar
+      const pokemonActors = game.actors.filter(a => 
+        a.type === 'pokemon' && 
+        !this.actor.system[destination].includes(a.id) &&
+        a.testUserPermission(game.user, "OWNER")  // Verifica permisos de propietario
+      );
+      
+      if (pokemonActors.length === 0) {
+        ui.notifications.warn("No hay Pokémon disponibles para agregar");
+        return;
+      }
+
       const dialog = new Dialog({
         title: `Agregar Pokémon al ${destination === 'equipo' ? 'Equipo' : 'PC'}`,
         content: `
@@ -325,6 +336,14 @@ export class PokevttActorSheet extends ActorSheet {
             label: "Agregar",
             callback: async (html) => {
               const pokemonId = html.find('[name="pokemonId"]').val();
+              const pokemon = game.actors.get(pokemonId);
+              
+              // Verificar permisos nuevamente por seguridad
+              if (!pokemon.testUserPermission(game.user, "OWNER")) {
+                ui.notifications.error("No tienes permiso para agregar este Pokémon");
+                return;
+              }
+
               const currentList = this.actor.system[destination];
               await this.actor.update({
                 [`system.${destination}`]: [...currentList, pokemonId]
@@ -348,6 +367,11 @@ export class PokevttActorSheet extends ActorSheet {
     });
 
     html.find('.move-to-team').click(async (ev) => {
+      if (this.actor.system.equipo.length >= 4) {
+        ui.notifications.warn("El equipo no puede tener más de 4 Pokémon");
+        return;
+      }
+      
       const pokemonId = ev.currentTarget.closest('.pokemon-entry').dataset.pokemonId;
       const pc = this.actor.system.pc.filter(id => id !== pokemonId);
       const equipo = [...this.actor.system.equipo, pokemonId];
@@ -366,6 +390,12 @@ export class PokevttActorSheet extends ActorSheet {
       await this.actor.update({
         [`system.${destination}`]: currentList
       });
+    });
+
+    // Hacer que los Pokémon sean arrastrables
+    html.find('.pokemon-entry').each((i, li) => {
+      li.setAttribute('draggable', true);
+      li.addEventListener('dragstart', this._onDragPokemon.bind(this));
     });
   }
 
@@ -401,7 +431,7 @@ export class PokevttActorSheet extends ActorSheet {
    * @param {Event} event   The originating click event
    * @private
    */
-  _onRoll(event) {
+  async _onRoll(event) {
     event.preventDefault();
     const element = event.currentTarget;
     const dataset = element.dataset;
@@ -411,7 +441,52 @@ export class PokevttActorSheet extends ActorSheet {
       if (dataset.rollType == 'item') {
         const itemId = element.closest('.item').dataset.itemId;
         const item = this.actor.items.get(itemId);
-        if (item) return item.roll();
+        if (item) {
+          // Construir la fórmula de tirada
+          const diceNum = item.system.roll.diceNum ?? 0;
+          const diceSize = item.system.roll.diceSize || "d6";
+          const diceBonus = item.system.roll.diceBonus || "";
+          
+          // Construir la fórmula
+          let formula;
+          if (diceNum > 0) {
+            formula = `${diceNum}${diceSize}${diceBonus ? " + " + diceBonus : ""}`;
+          } else if (diceBonus) {
+            formula = diceBonus; // Si solo hay modificador, usar ese valor
+          }
+
+          try {
+            // Preparar el contenido del mensaje
+            let content = `<h2>${item.name}</h2>`;
+            if (item.system.description) {
+              content += `<div class="item-description">${item.system.description}</div>`;
+            }
+
+            // Si hay fórmula (dados o modificador), hacer la tirada
+            if (formula) {
+              let roll = new Roll(formula);
+              await roll.evaluate({async: true});
+              
+              await ChatMessage.create({
+                speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+                flavor: content,
+                roll: roll,
+                rollMode: game.settings.get('core', 'rollMode'),
+                type: CONST.CHAT_MESSAGE_TYPES.ROLL
+              });
+            } else {
+              // Si no hay ni dados ni modificador, solo mostrar la información
+              await ChatMessage.create({
+                speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+                content: content,
+                type: CONST.CHAT_MESSAGE_TYPES.OTHER
+              });
+            }
+          } catch (error) {
+            console.error("Error al mostrar el item:", error);
+            ui.notifications.error("Hubo un error al mostrar el item");
+          }
+        }
       }
     }
 
@@ -426,5 +501,18 @@ export class PokevttActorSheet extends ActorSheet {
       });
       return roll;
     }
+  }
+
+  // Agregar este nuevo método
+  _onDragPokemon(event) {
+    const pokemonId = event.currentTarget.dataset.pokemonId;
+    const pokemon = game.actors.get(pokemonId);
+    
+    event.dataTransfer.setData("text/plain", JSON.stringify({
+      type: "Actor",
+      uuid: pokemon.uuid,
+      actorId: pokemon.id,
+      tokenData: pokemon.prototypeToken
+    }));
   }
 }

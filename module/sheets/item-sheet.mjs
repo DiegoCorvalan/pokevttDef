@@ -90,10 +90,43 @@ export class PokevttItemSheet extends ItemSheet {
     if (!this.isEditable) return;
 
     // Roll handlers, click handlers, etc. would go here.
+    html.find('.rollable').click(this._onRoll.bind(this));
 
     // Active Effect management
     html.on('click', '.effect-control', (ev) =>
       onManageActiveEffect(ev, this.item)
     );
+  }
+
+  async _onRoll(event) {
+    event.preventDefault();
+    const item = this.item;
+
+    // Construir la fórmula de tirada
+    const diceNum = item.system.roll.diceNum || 1;
+    const diceSize = item.system.roll.diceSize || "d6";
+    const diceBonus = item.system.roll.diceBonus || "";
+    
+    const formula = `${diceNum}${diceSize}${diceBonus ? " + " + diceBonus : ""}`;
+
+    // Crear la tirada
+    let roll = new Roll(formula);
+    
+    // Ejecutar la tirada
+    await roll.evaluate({async: true});
+
+    // Crear el mensaje en el chat
+    const messageData = {
+      speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+      flavor: `${item.name}`,
+      roll: roll,
+      rollMode: game.settings.get('core', 'rollMode'),
+      type: CONST.CHAT_MESSAGE_TYPES.ROLL
+    };
+
+    // Enviar el mensaje al chat
+    await ChatMessage.create(messageData);
+
+    return roll;
   }
 }
