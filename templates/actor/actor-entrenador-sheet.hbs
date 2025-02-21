@@ -50,6 +50,7 @@
     <a class="item" data-tab="description">Description</a>
     <a class="item" data-tab="items">Items</a>
     <a class="item" data-tab="effects">Effects</a>
+    <a class="item" data-tab="pokemon">Pokémon</a>
   </nav>
 
   {{!-- Sheet Body --}}
@@ -96,7 +97,55 @@
     <div class="tab effects flexcol" data-group="primary" data-tab="effects">
       {{> "systems/pokevtt/templates/actor/parts/actor-effects.hbs"}}
     </div>
-                <button id="editButton" class="small-button" disabled></button>
+
+    {{!-- Nueva sección para Pokémon --}}
+    <div class="tab pokemon" data-group="primary" data-tab="pokemon">
+      <div class="pokemon-container">
+        <section class="equipo">
+          <h2>Equipo</h2>
+          <div class="pokemon-list">
+            {{#each system.equipo as |pokemonId|}}
+              {{#with (getActor pokemonId) as |pokemon|}}
+                <div class="pokemon-entry" data-pokemon-id="{{pokemon._id}}">
+                  <img src="{{pokemon.img}}" width="50" height="50"/>
+                  <span class="pokemon-name">{{pokemon.name}}</span>
+                  <div class="pokemon-controls">
+                    <a class="pokemon-control move-to-pc"><i class="fas fa-box"></i></a>
+                    <a class="pokemon-control remove-pokemon"><i class="fas fa-times"></i></a>
+                  </div>
+                </div>
+              {{/with}}
+            {{/each}}
+          </div>
+          <button type="button" class="add-pokemon" data-destination="equipo">
+            <i class="fas fa-plus"></i> Agregar Pokémon al Equipo
+          </button>
+        </section>
+
+        <section class="pc">
+          <h2>PC</h2>
+          <div class="pokemon-list">
+            {{#each system.pc as |pokemonId|}}
+              {{#with (getActor pokemonId) as |pokemon|}}
+                <div class="pokemon-entry" data-pokemon-id="{{pokemon._id}}">
+                  <img src="{{pokemon.img}}" width="50" height="50"/>
+                  <span class="pokemon-name">{{pokemon.name}}</span>
+                  <div class="pokemon-controls">
+                    <a class="pokemon-control move-to-team"><i class="fas fa-users"></i></a>
+                    <a class="pokemon-control remove-pokemon"><i class="fas fa-times"></i></a>
+                  </div>
+                </div>
+              {{/with}}
+            {{/each}}
+          </div>
+          <button type="button" class="add-pokemon" data-destination="pc">
+            <i class="fas fa-plus"></i> Agregar Pokémon al PC
+          </button>
+        </section>
+      </div>
+    </div>
+
+    <button id="editButton" class="small-button" disabled></button>
 
   </section>
 

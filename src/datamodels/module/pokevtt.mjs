@@ -9,6 +9,7 @@ import { preloadHandlebarsTemplates } from './helpers/templates.mjs';
 import { POKEVTT } from './helpers/config.mjs';
 // Import DataModel classes
 import * as models from './data/_module.mjs';
+import { registerHandlebarsHelpers } from "./helpers/handlebars.mjs";
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -67,6 +68,8 @@ Hooks.once('init', function () {
     makeDefault: true,
     label: 'POKEVTT.SheetLabels.Item',
   });
+  registerHandlebarsHelpers();
+
 
   // Preload Handlebars templates.
   return preloadHandlebarsTemplates();

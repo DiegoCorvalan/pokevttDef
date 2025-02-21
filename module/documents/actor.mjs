@@ -10,6 +10,12 @@ export class PokevttActor extends Actor {
     // prepareBaseData(), prepareEmbeddedDocuments() (including active effects),
     // prepareDerivedData().
     super.prepareData();
+    
+    // Asegurarse de que los arrays existan
+    if (this.type === 'entrenador') {
+      if (!this.system.equipo) this.system.equipo = [];
+      if (!this.system.pc) this.system.pc = [];
+    }
   }
 
   /** @override */
@@ -117,3 +123,15 @@ export class PokevttActor extends Actor {
     // Process additional Pokemon data here.
   }
 }
+
+// En la definición del sistema para entrenador
+const entrenadorData = {
+  equipo: {
+    type: Array,
+    default: []
+  },
+  pc: {
+    type: Array,
+    default: []
+  }
+};

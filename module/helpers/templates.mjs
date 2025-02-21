@@ -4,6 +4,11 @@
  * @return {Promise}
  */
 export const preloadHandlebarsTemplates = async function () {
+  // Registrar el helper para obtener actores
+  Handlebars.registerHelper('getActor', function(actorId) {
+    return game.actors.get(actorId);
+  });
+
   return loadTemplates([
     // Actor partials.
     'systems/pokevtt/templates/actor/parts/actor-features.hbs',

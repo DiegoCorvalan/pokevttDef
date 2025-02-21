@@ -301,6 +301,72 @@ export class PokevttActorSheet extends ActorSheet {
         event.currentTarget.innerHTML = '<i class="fas fa-edit"></i>';
       }
     });
+
+    // Agregar Pokémon
+    html.find('.add-pokemon').click(async (ev) => {
+      const destination = ev.currentTarget.dataset.destination;
+      const pokemonActors = game.actors.filter(a => a.type === 'pokemon' && !this.actor.system[destination].includes(a.id));
+      
+      const dialog = new Dialog({
+        title: `Agregar Pokémon al ${destination === 'equipo' ? 'Equipo' : 'PC'}`,
+        content: `
+          <form>
+            <div class="form-group">
+              <label>Seleccionar Pokémon:</label>
+              <select name="pokemonId">
+                ${pokemonActors.map(a => `<option value="${a.id}">${a.name}</option>`).join('')}
+              </select>
+            </div>
+          </form>
+        `,
+        buttons: {
+          add: {
+            icon: '<i class="fas fa-plus"></i>',
+            label: "Agregar",
+            callback: async (html) => {
+              const pokemonId = html.find('[name="pokemonId"]').val();
+              const currentList = this.actor.system[destination];
+              await this.actor.update({
+                [`system.${destination}`]: [...currentList, pokemonId]
+              });
+            }
+          }
+        }
+      });
+      dialog.render(true);
+    });
+
+    // Mover Pokémon entre equipo y PC
+    html.find('.move-to-pc').click(async (ev) => {
+      const pokemonId = ev.currentTarget.closest('.pokemon-entry').dataset.pokemonId;
+      const equipo = this.actor.system.equipo.filter(id => id !== pokemonId);
+      const pc = [...this.actor.system.pc, pokemonId];
+      await this.actor.update({
+        'system.equipo': equipo,
+        'system.pc': pc
+      });
+    });
+
+    html.find('.move-to-team').click(async (ev) => {
+      const pokemonId = ev.currentTarget.closest('.pokemon-entry').dataset.pokemonId;
+      const pc = this.actor.system.pc.filter(id => id !== pokemonId);
+      const equipo = [...this.actor.system.equipo, pokemonId];
+      await this.actor.update({
+        'system.equipo': equipo,
+        'system.pc': pc
+      });
+    });
+
+    // Eliminar Pokémon
+    html.find('.remove-pokemon').click(async (ev) => {
+      const pokemonEntry = ev.currentTarget.closest('.pokemon-entry');
+      const pokemonId = pokemonEntry.dataset.pokemonId;
+      const destination = pokemonEntry.closest('.equipo') ? 'equipo' : 'pc';
+      const currentList = this.actor.system[destination].filter(id => id !== pokemonId);
+      await this.actor.update({
+        [`system.${destination}`]: currentList
+      });
+    });
   }
 
   /**

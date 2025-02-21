@@ -1284,3 +1284,60 @@
 .pokevtt .items-list .item[data-move-type="siniestro"] h4 { color: #705848 !important; }
 .pokevtt .items-list .item[data-move-type="acero"] h4 { color: #B8B8D0 !important; }
 .pokevtt .items-list .item[data-move-type="hada"] h4 { color: #EE99AC !important; }
+
+/* Estilos para la sección de Pokémon */
+.pokemon-container {
+  display: flex;
+  gap: 20px;
+}
+
+.pokemon-container section {
+  flex: 1;
+  background: rgba(52, 152, 219, 0.1);
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.pokemon-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.pokemon-entry {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px;
+  background: rgba(52, 152, 219, 0.2);
+  border-radius: 3px;
+}
+
+.pokemon-entry img {
+  border: none;
+}
+
+.pokemon-name {
+  flex: 1;
+}
+
+.pokemon-controls {
+  display: flex;
+  gap: 5px;
+}
+
+.pokemon-control {
+  cursor: pointer;
+  color: var(--color-yellow-main);
+}
+
+.pokemon-control:hover {
+  color: var(--color-yellow-bright);
+  text-shadow: 0 0 8px var(--color-yellow-main);
+}
+
+.add-pokemon {
+  width: 100%;
+  margin-top: 10px;
+}
