@@ -12,7 +12,7 @@ export class PokevttActorSheet extends ActorSheet {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ['pokevtt', 'sheet', 'actor'],
-      width: 600,
+      width: 700,
       height: 600,
       tabs: [
         {
@@ -187,10 +187,51 @@ export class PokevttActorSheet extends ActorSheet {
       });
 
       let content = `
-        <h2>${item.name}</h2>
+        <h2>${item.name} <span style="font-size: 0.8em; color: #666;">(${CONFIG.POKEVTT.types[item.system.moveType]})</span></h2>
         <hr>
         ${enrichedDescription}
       `;
+
+      // Mostrar dificultad si está habilitada
+      if (item.system.hasDifficulty) {
+        const diffAttrKey = item.system.difficultyAttribute;
+        const defenseAttrKey = item.system.defenseAttribute;
+        const difficultyBase = parseInt(item.system.difficultyBase || "5");
+        
+        if (!diffAttrKey || !defenseAttrKey) {
+          console.warn("Falta seleccionar un atributo para la dificultad");
+          ui.notifications.warn("Este ítem necesita tener configurados los atributos de dificultad y defensa.");
+          return;
+        }
+        
+        const attrMod = this.actor.system.abilities?.[diffAttrKey]?.mod || 0;
+        const difficulty = attrMod + difficultyBase;
+        
+        let difficultyText = "";
+        switch(difficultyBase) {
+          case 3:
+            difficultyText = "Fácil";
+            break;
+          case 5:
+            difficultyText = "Normal";
+            break;
+          case 8:
+            difficultyText = "Difícil";
+            break;
+          default:
+            difficultyText = "Normal";
+        }
+        
+        content += `
+          <hr>
+          <div class="dice-roll difficulty-roll">
+            <div class="dice-result">
+              <h4>Dificultad ${difficultyText}</h4>
+              <div class="dice-formula">${defenseAttrKey} vs ${difficulty}</div>
+            </div>
+          </div>
+        `;
+      }
 
       // Tirada de ataque si está habilitada
       if (item.system.hasAttackRoll) {
@@ -205,10 +246,9 @@ export class PokevttActorSheet extends ActorSheet {
         
         content += `
           <hr>
-          <div class="dice-roll">
+          <div class="dice-roll attack-roll">
             <div class="dice-result">
-              <h4>Tirada de ataque con ${attributeKey} (1d10+${attributeMod})</h4>
-              <div class="dice-formula">${attackRoll.formula}</div>
+              <h4>Tirada de ataque</h4>
               <div class="dice-total">${attackRoll.total}</div>
             </div>
           </div>
@@ -223,10 +263,9 @@ export class PokevttActorSheet extends ActorSheet {
         
         content += `
           <hr>
-          <div class="dice-roll">
+          <div class="dice-roll damage-roll">
             <div class="dice-result">
-              <h4>Daño (${diceNum}d${diceSize})</h4>
-              <div class="dice-formula">${damageRoll.formula}</div>
+              <h4>Daño</h4>
               <div class="dice-total">${damageRoll.total}</div>
             </div>
           </div>
@@ -249,6 +288,19 @@ export class PokevttActorSheet extends ActorSheet {
         li.addEventListener('dragstart', handler, false);
       });
     }
+
+    // Edit button functionality
+    html.find('#editButton').click(event => {
+      event.preventDefault();
+      const hiddenContent = html.find('.hidden-content');
+      if (hiddenContent.css('display') === 'none') {
+        hiddenContent.show();
+        event.currentTarget.innerHTML = '<i class="fas fa-save"></i>';
+      } else {
+        hiddenContent.hide();
+        event.currentTarget.innerHTML = '<i class="fas fa-edit"></i>';
+      }
+    });
   }
 
   /**

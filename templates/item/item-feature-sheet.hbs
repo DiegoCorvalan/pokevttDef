@@ -22,6 +22,18 @@
     </div>
 
     <div class="tab attributes" data-group="primary" data-tab="attributes">
+      {{!-- Tipo de movimiento --}}
+      <div class="resource">
+        <label for="system.moveType" class="resource-label">Tipo de Movimiento</label>
+        <select name="system.moveType">
+          {{#select system.moveType}}
+          {{#each config.types as |name type|}}
+          <option value="{{type}}">{{name}}</option>
+          {{/each}}
+          {{/select}}
+        </select>
+      </div>
+
       {{!-- Opciones de tirada --}}
       <div class="resource">
         <label class="resource-label">Opciones de tirada</label>
@@ -35,7 +47,42 @@
             <input type="checkbox" name="system.hasDamageRoll" {{checked system.hasDamageRoll}}/> Incluir tirada de daño
           </label>
         </div>
+        <div class="form-group">
+          <label class="checkbox">
+            <input type="checkbox" name="system.hasDifficulty" {{checked system.hasDifficulty}}/> Incluir dificultad
+          </label>
+        </div>
       </div>
+
+      {{!-- Selección de Atributo para dificultad si está habilitada --}}
+      {{#if system.hasDifficulty}}
+      <div class="resource">
+        <label for="system.difficultyAttribute" class="resource-label">Atributo del Atacante</label>
+        <select name="system.difficultyAttribute">
+          {{#each actorAttributes as |ability key|}}
+          <option value="{{key}}" {{#if (eq ../system.difficultyAttribute key)}}selected{{/if}}>
+            {{localize (lookup ../config.abilities key)}}
+          </option>
+          {{/each}}
+        </select>
+        
+        <label for="system.defenseAttribute" class="resource-label">Atributo de Defensa</label>
+        <select name="system.defenseAttribute">
+          {{#each actorAttributes as |ability key|}}
+          <option value="{{key}}" {{#if (eq ../system.defenseAttribute key)}}selected{{/if}}>
+            {{localize (lookup ../config.abilities key)}}
+          </option>
+          {{/each}}
+        </select>
+        
+        <label for="system.difficultyBase" class="resource-label">Dificultad Base</label>
+        <select name="system.difficultyBase">
+          <option value="3" {{#if (eq system.difficultyBase "3")}}selected{{/if}}>Fácil (+3)</option>
+          <option value="5" {{#if (eq system.difficultyBase "5")}}selected{{/if}}>Normal (+5)</option>
+          <option value="8" {{#if (eq system.difficultyBase "8")}}selected{{/if}}>Difícil (+8)</option>
+        </select>
+      </div>
+      {{/if}}
 
       {{!-- Resto de los atributos solo si hay tirada de daño --}}
       {{#if system.hasDamageRoll}}
@@ -72,7 +119,6 @@
         </div>
       </div>
       {{/if}}
-
 
       {{!-- Selección de Atributo solo si hay tirada de ataque --}}
       {{#if system.hasAttackRoll}}

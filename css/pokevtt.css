@@ -1,4 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');  /* Clásica de 8-bit */
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');          /* Más legible, estilo terminal */
+@import url('https://fonts.googleapis.com/css2?family=Silkscreen&display=swap');     /* Limpia y moderna pixel art */
 /* Global styles */
 .window-app {
   font-family: "Roboto", sans-serif;
@@ -228,8 +231,28 @@
 }
 
 .small-button {
-  height: 10px;
-  width: 10px;
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  width: 30px;
+  height: 30px;
+  padding: 5px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid #999;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.small-button i {
+  margin: 0;
+  font-size: 14px;
+}
+
+.small-button:hover {
+  background: rgba(0, 0, 0, 0.2);
 }
 
 /* Styles limited to pokevtt sheets */
@@ -314,7 +337,7 @@
   padding: 0;
 }
 .pokevtt .items-list .item-name {
-  flex: 2;
+  flex: 13;
   margin: 0;
   overflow: hidden;
   font-size: 13px;
@@ -325,10 +348,8 @@
 .pokevtt .items-list .item-name h3, .pokevtt .items-list .item-name h4 {
   margin: 0;
   white-space: nowrap;
-  overflow-x: hidden;
 }
 .pokevtt .items-list .item-controls {
-  display: flex;
   flex: 0 0 100px;
   justify-content: flex-end;
 }
@@ -362,21 +383,13 @@
   font-size: 12px;
 }
 .pokevtt .items-list .items-header {
-  height: 28px;
-  margin: 2px 0;
-  padding: 0;
-  align-items: center;
-  background: rgba(0, 0, 0, 0.05);
-  border: 2px groove #eeede0;
-  font-weight: bold;
+  color: var(--color-yellow-main);
+  background: none;
 }
-.pokevtt .items-list .items-header > * {
-  font-size: 12px;
-  text-align: center;
-}
-.pokevtt .items-list .items-header .item-name {
-  padding-left: 5px;
-  text-align: left;
+.pokevtt .items-list .items-header h3,
+.pokevtt .items-list .items-header h4 {
+  color: var(--color-yellow-main) !important;
+  text-shadow: none;
 }
 .pokevtt .item-formula {
   flex: 0 0 200px;
@@ -393,3 +406,881 @@
 .pokevtt .effects .item .effect-controls {
   border: none;
 }
+
+/* Estilos para los selectores de tipo */
+.pokevtt select,
+.pokevtt select option,
+.pokevtt .type-select,
+.pokevtt .type-select option {
+  color: #FFE082 !important;
+  background: rgba(52, 152, 219, 0.2) !important;
+}
+
+/* Hover y focus para las opciones */
+.pokevtt select option:hover,
+.pokevtt select option:focus,
+.pokevtt .type-select option:hover,
+.pokevtt .type-select option:focus {
+  background: rgba(52, 152, 219, 0.4) !important;
+  color: #FFD54F !important;
+}
+
+/* Estilo específico para los selectores de tipo */
+.pokevtt .types-compact select,
+.pokevtt select[name^="system.types"],
+.pokevtt select[name="system.moveType"] {
+  color: #FFE082 !important;
+  background: rgba(52, 152, 219, 0.2) !important;
+  border: 1px solid #FFE082;
+  border-radius: 3px;
+}
+
+/* Estilo para la lista desplegada */
+.pokevtt select option,
+.pokevtt .type-select option {
+  background-color: #1a237e !important;
+  color: #FFE082 !important;
+}
+
+/* Estilo para el option seleccionado */
+.pokevtt select option:checked,
+.pokevtt .type-select option:checked {
+  background-color: #0d47a1 !important;
+  color: #FFD54F !important;
+}
+
+/* Estilo para el fondo de la ficha usando azul oscuro */
+.pokevtt.sheet.actor form {
+  background: linear-gradient(to bottom, #1a237e, #0d47a1);
+  color: #FFE082;
+  border-radius: 5px;
+  padding: 8px;
+}
+
+.pokevtt.sheet.actor .window-content {
+  background: linear-gradient(to bottom, #1a237e, #0d47a1);
+}
+
+/* Pestañas con fondo azul claro */
+.pokevtt .sheet-tabs .item {
+  color: #FFE082;
+  background: rgba(52, 152, 219, 0.2); /* Azul original con transparencia */
+  border-radius: 3px 3px 0 0;
+}
+
+.pokevtt .sheet-tabs .item.active {
+  background: rgba(52, 152, 219, 0.4); /* Azul original más opaco */
+  color: #FFD54F;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Inputs con fondo azul claro */
+.pokevtt input[type="text"],
+.pokevtt input[type="number"],
+.pokevtt select {
+  background: none;
+  border: none;
+  border-bottom: 1px solid #FFE082;
+  border-radius: 0;
+  padding: 2px;
+}
+
+/* Listas con fondo azul */
+.pokevtt .items-list {
+  background: none;
+  border: none;
+  margin: 5px 0;
+}
+
+.pokevtt .items-list .item {
+  border-bottom: 1px solid rgba(255, 224, 130, 0.3);
+  padding: 3px 0;
+}
+
+.pokevtt .items-list .items-header {
+  background: none;
+  border-bottom: 1px solid #FFE082;
+}
+
+/* Mantener el resto de los estilos amarillos igual */
+.pokevtt .resource-label {
+  color: #FFD54F;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.pokevtt .charname input {
+  color: #FFD54F;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  background: rgba(52, 152, 219, 0.2);
+}
+
+.pokevtt .rollable:hover {
+  color: #FFD54F;
+  text-shadow: 0 0 10px #FFE082;
+  cursor: pointer;
+}
+
+/* Estilos para el chat */
+.chat-message {
+  background: linear-gradient(to bottom, #1a237e, #0d47a1);
+  color: var(--color-yellow-main);
+  border: none;
+  border-radius: 5px;
+  margin: 5px;
+  padding: 5px;
+}
+
+/* Encabezado del mensaje */
+.chat-message .message-header {
+  color: #FFD54F;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  border-bottom: 1px solid rgba(255, 224, 130, 0.3);
+  margin-bottom: 5px;
+}
+
+/* Contenido del mensaje */
+.chat-message .message-content {
+  background: none;
+  padding: 0;
+}
+
+/* Estilos para las tiradas en el chat */
+.chat-message .dice-roll {
+  background: none;
+  border: none;
+  padding: 5px 0;
+}
+
+.chat-message .dice-result {
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.chat-message .dice-formula {
+  font-size: 0.9em;
+  color: rgba(255, 224, 130, 0.8);
+}
+
+.chat-message .dice-total {
+  font-size: 1.2em;
+  color: #FFD54F;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  margin: 3px 0;
+}
+
+/* Eliminar líneas separadoras */
+.chat-message hr,
+.chat-message .dice-roll hr,
+.chat-message .dice-result hr,
+.chat-message .message-content hr,
+.chat-message .dice-tooltip hr {
+  display: none !important;
+}
+
+/* Ajustar espaciado */
+.chat-message .dice-roll,
+.chat-message .dice-result {
+  margin: 3px 0;
+  padding: 2px 0;
+}
+
+/* Estilos para el daño */
+.chat-message .damage,
+.chat-message .damage-roll,
+.chat-message .damage-roll .dice-total,
+.chat-message .damage-formula {
+  color: #ff4444 !important;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Estilos para la dificultad */
+.chat-message .difficulty-roll {
+  font-size: 1.2em;
+  font-family: 'VT323', monospace;  /* Texto descriptivo más legible */
+}
+
+.chat-message .difficulty-roll .dice-total {
+  color: var(--color-yellow-main) !important;
+  font-size: 1.2em;
+  font-family: 'Press Start 2P', cursive;  /* Resultado más impactante */
+}
+
+.chat-message .difficulty-roll .dice-formula {
+  color: var(--color-yellow-main) !important;
+  font-size: 0.9em;
+  font-family: 'VT323', monospace;  /* Fórmula más legible */
+}
+
+/* Dados y resultados generales */
+.chat-message .dice-total {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1.1em;
+  color: var(--color-yellow-bright) !important;
+}
+
+/* Nombre del hablante */
+.chat-message .message-sender {
+  color: #FFD54F;
+  font-weight: bold;
+}
+
+/* Enlaces en el chat */
+.chat-message a {
+  color: #FFE082;
+  text-decoration: underline;
+}
+
+.chat-message a:hover {
+  color: #FFD54F;
+  text-shadow: 0 0 10px #FFE082;
+}
+
+/* Flavor text */
+.chat-message .flavor-text {
+  font-style: italic;
+  color: rgba(255, 224, 130, 0.8); /* FFE082 con transparencia */
+}
+
+/* Estilos para las hojas de items */
+.pokevtt.sheet.item form {
+  background: linear-gradient(to bottom, #1a237e, #0d47a1);
+  color: #FFE082;
+  border-radius: 5px;
+  padding: 8px;
+}
+
+.pokevtt.sheet.item .window-content {
+  background: linear-gradient(to bottom, #1a237e, #0d47a1);
+}
+
+/* Cabecera del item */
+.pokevtt.sheet.item .sheet-header {
+  border-bottom: 1px solid #FFE082;
+  margin-bottom: 10px;
+}
+
+.pokevtt.sheet.item .sheet-header .profile-img {
+  border: 2px solid #FFE082;
+  border-radius: 5px;
+}
+
+.pokevtt.sheet.item .sheet-header .header-fields {
+  color: #FFD54F;
+}
+
+/* Pestañas de items */
+.pokevtt.sheet.item .sheet-navigation {
+  border-bottom: 1px solid #FFE082;
+}
+
+.pokevtt.sheet.item .tabs {
+  border-bottom: 1px solid #FFE082;
+}
+
+.pokevtt.sheet.item .tabs .item {
+  color: #FFE082;
+  background: rgba(52, 152, 219, 0.2);
+  border-radius: 3px 3px 0 0;
+}
+
+.pokevtt.sheet.item .tabs .item.active {
+  color: #FFD54F;
+  background: rgba(52, 152, 219, 0.4);
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Campos de entrada */
+.pokevtt.sheet.item input[type="text"],
+.pokevtt.sheet.item input[type="number"],
+.pokevtt.sheet.item select {
+  background: rgba(52, 152, 219, 0.2);
+  color: #FFE082;
+  border: 1px solid #FFE082;
+  border-radius: 3px;
+}
+
+/* Editor de descripción */
+.pokevtt.sheet.item .editor {
+  background: rgba(52, 152, 219, 0.2);
+  color: #FFE082;
+  border: 1px solid #FFE082;
+  border-radius: 3px;
+  padding: 5px;
+}
+
+.pokevtt.sheet.item .editor-content {
+  color: #FFE082;
+}
+
+/* Etiquetas y títulos */
+.pokevtt.sheet.item .resource-label {
+  color: #FFD54F;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  font-weight: bold;
+}
+
+/* Checkboxes y radios */
+.pokevtt.sheet.item input[type="checkbox"],
+.pokevtt.sheet.item input[type="radio"] {
+  accent-color: #FFD54F;
+}
+
+/* Botones */
+.pokevtt.sheet.item button {
+  background: rgba(52, 152, 219, 0.3);
+  color: #FFE082;
+  border: 1px solid #FFE082;
+  border-radius: 3px;
+  padding: 5px 10px;
+}
+
+.pokevtt.sheet.item button:hover {
+  background: rgba(52, 152, 219, 0.5);
+  color: #FFD54F;
+  text-shadow: 0 0 10px #FFE082;
+}
+
+/* Colores base para todos los elementos */
+.pokevtt {
+  color: #FFE082;
+  font-family: 'Press Start 2P', cursive;    /* Muy pixelada, estilo NES */
+}
+
+/* Iconos */
+.pokevtt i.fas,
+.pokevtt i.far,
+.pokevtt i.fab {
+  color: #FFE082;
+}
+
+/* Bordes y líneas */
+.pokevtt hr,
+.pokevtt .tabs,
+.pokevtt .header-fields,
+.pokevtt .editor,
+.pokevtt .items-list {
+  border-color: #FFE082 !important;
+}
+
+/* Textos por defecto */
+.pokevtt label,
+.pokevtt p,
+.pokevtt span,
+.pokevtt div {
+  color: #FFE082;
+}
+
+/* Headers y títulos con Press Start 2P (más pixelada) */
+.pokevtt h1,
+.pokevtt h2,
+.pokevtt h3,
+.pokevtt h4,
+.pokevtt .charname,
+.pokevtt .items-header {
+  font-family: 'Press Start 2P', cursive;
+  line-height: 1.4;
+  font-size: 0.9em; /* Reducir tamaño porque esta fuente es grande */
+}
+
+/* Texto principal con VT323 (más legible) */
+.pokevtt,
+.pokevtt input,
+.pokevtt label,
+.pokevtt .item-name,
+.pokevtt .resource-label,
+.chat-message {
+  font-family: 'VT323', monospace;
+  font-size: 1.2em; /* Un poco más grande para mejor legibilidad */
+}
+
+/* Elementos de control con Silkscreen (moderna) */
+.pokevtt button,
+.pokevtt .item-controls,
+.pokevtt .tabs .item,
+.pokevtt select,
+.pokevtt .type-select {
+  font-family: 'Silkscreen', cursive;
+  font-size: 0.9em;
+}
+
+/* Ajustar algunos tamaños específicos */
+.pokevtt .charname input {
+  font-size: 1.2em;
+}
+
+.pokevtt .items-header {
+  font-size: 0.8em;
+}
+
+.chat-message .dice-total {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1.1em;
+}
+
+/* Inputs y campos de texto */
+.pokevtt input::placeholder {
+  color: rgba(255, 224, 130, 0.5);
+}
+
+.pokevtt input[type="text"],
+.pokevtt input[type="number"],
+.pokevtt input[type="password"],
+.pokevtt input[type="date"],
+.pokevtt input[type="time"],
+.pokevtt input[type="email"],
+.pokevtt textarea {
+  color: #FFE082 !important;
+  background: rgba(52, 152, 219, 0.2) !important;
+  border-color: #FFE082 !important;
+}
+
+/* Botones y controles */
+.pokevtt button,
+.pokevtt .button {
+  color: #FFE082;
+  border-color: #FFE082;
+  background: rgba(52, 152, 219, 0.2);
+}
+
+.pokevtt button:hover,
+.pokevtt .button:hover {
+  color: #FFD54F;
+  background: rgba(52, 152, 219, 0.4);
+  text-shadow: 0 0 10px #FFE082;
+}
+
+/* Editor de texto enriquecido */
+.pokevtt .editor-content {
+  color: #FFE082 !important;
+  background: rgba(52, 152, 219, 0.2) !important;
+}
+
+.pokevtt .tox .tox-tbtn {
+  color: #FFE082 !important;
+}
+
+/* Tooltips y elementos emergentes */
+.pokevtt .tooltip {
+  color: #FFE082;
+  background: #1a237e;
+  border-color: #FFE082;
+}
+
+/* Scrollbars personalizadas */
+.pokevtt ::-webkit-scrollbar-thumb {
+  background: rgba(255, 224, 130, 0.5);
+  border: 1px solid #FFE082;
+}
+
+.pokevtt ::-webkit-scrollbar-track {
+  background: rgba(52, 152, 219, 0.2);
+}
+
+/* Elementos de lista */
+.pokevtt .item-list .item {
+  border-color: #FFE082;
+}
+
+/* Iconos de control (cerrar, minimizar, etc.) */
+.pokevtt .window-header .window-title,
+.pokevtt .window-header .close,
+.pokevtt .window-header .configure {
+  color: #FFE082;
+}
+
+/* Estado activo/hover para elementos interactivos */
+.pokevtt .item.active,
+.pokevtt .tab.active {
+  color: #FFD54F;
+  text-shadow: 0 0 10px #FFE082;
+}
+
+/* Elementos deshabilitados */
+.pokevtt input:disabled,
+.pokevtt select:disabled,
+.pokevtt button:disabled {
+  color: rgba(255, 224, 130, 0.5) !important;
+  border-color: rgba(255, 224, 130, 0.5) !important;
+}
+
+/* Pequeño botón de edición */
+.small-button {
+  color: #FFE082 !important;
+}
+
+.small-button:hover {
+  color: #FFD54F !important;
+  text-shadow: 0 0 10px #FFE082;
+}
+
+/* Asegurar que los íconos dentro de botones también sigan el esquema de color */
+.small-button i {
+  color: inherit !important;
+}
+
+/* Nombres de features en la ficha de actor */
+.pokevtt .items-list .item-name,
+.pokevtt .items-list .item-name h4,
+.pokevtt .items-list .item .item-name {
+  color: #FFE082 !important;
+}
+
+/* Tipos de feature en el chat */
+.chat-message .item h2,
+.chat-message .item h2 span,
+.chat-message .item-name,
+.chat-message .item-type {
+  color: #FFD54F !important;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Asegurar que los nombres en las listas de items sean visibles */
+.pokevtt .directory-list .item-name,
+.pokevtt .items-list .item-name input {
+  color: #FFE082 !important;
+  background: rgba(52, 152, 219, 0.2);
+}
+
+/* Tipo de movimiento en el chat */
+.chat-message .item-type,
+.chat-message .move-type {
+  color: #FFE082 !important;
+}
+
+/* Headers en mensajes de chat */
+.chat-message h1,
+.chat-message h2,
+.chat-message h3,
+.chat-message h4 {
+  color: #FFD54F !important;
+}
+
+/* Asegurar que los spans dentro de headers también sean del color correcto */
+.chat-message h1 span,
+.chat-message h2 span,
+.chat-message h3 span,
+.chat-message h4 span {
+  color: inherit !important;
+}
+
+/* Eliminar bordes de recursos */
+.pokevtt .resource {
+  border: none;
+  background: none;
+  padding: 0;
+  margin-bottom: 5px;
+}
+
+/* Simplificar pestañas */
+.pokevtt .tabs {
+  border: none;
+  margin-bottom: 10px;
+}
+
+.pokevtt .tabs .item {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin: 0 10px;
+  padding: 5px 0;
+}
+
+.pokevtt .tabs .item.active {
+  background: none;
+  border-bottom: 2px solid #FFD54F;
+  color: #FFD54F;
+}
+
+/* Simplificar headers */
+.pokevtt .sheet-header {
+  border: none;
+  margin-bottom: 10px;
+}
+
+/* Simplificar tooltips de dados */
+.dice-tooltip {
+  background: none !important;
+  border: none !important;
+}
+
+.dice-tooltip .part-formula {
+  background: none;
+  border: none;
+  color: rgba(255, 224, 130, 0.8);
+}
+
+.dice-tooltip .part-total {
+  background: none;
+  border: none;
+  color: #FFD54F;
+}
+
+/* Eliminar bordes de secciones */
+.pokevtt .editor {
+  border: none;
+  background: rgba(52, 152, 219, 0.1);
+}
+
+/* Simplificar mensajes de chat */
+.chat-message {
+  background: linear-gradient(to bottom, #1a237e, #0d47a1);
+  border: none;
+  border-radius: 5px;
+  margin: 5px;
+  padding: 5px;
+}
+
+.chat-message .message-header {
+  border-bottom: 1px solid rgba(255, 224, 130, 0.3);
+  margin-bottom: 5px;
+}
+
+.chat-message .message-content {
+  background: none;
+  padding: 0;
+}
+
+/* Redefinir los colores base con tonos medios de amarillo */
+:root {
+  --color-yellow-main: #D4AF37;     /* Amarillo principal (más suave que el original pero no tan oscuro) */
+  --color-yellow-bright: #FFD700;    /* Amarillo brillante para destacados */
+  --color-yellow-dim: #BDB76B;       /* Amarillo tenue para elementos secundarios */
+}
+
+/* Asegurar que TODOS los elementos amarillos usen las nuevas variables */
+.pokevtt,
+.pokevtt label,
+.pokevtt p,
+.pokevtt span,
+.pokevtt div,
+.pokevtt input,
+.pokevtt select,
+.pokevtt .items-list .item-name,
+.pokevtt .items-list .item-formula,
+.pokevtt .items-list .roll-formula,
+.pokevtt .resource-label,
+.pokevtt .items-list i.fas,
+.pokevtt .items-list i.far,
+.pokevtt .items-list i.fab,
+.pokevtt .item-controls,
+.pokevtt .item-control,
+.pokevtt .items-header,
+.pokevtt .items-header h3,
+.pokevtt .items-header h4,
+.chat-message .message-content,
+.chat-message .dice-formula,
+.chat-message .item-name,
+.chat-message span,
+.chat-message .message-header {
+  color: var(--color-yellow-main) !important;
+}
+
+/* Elementos destacados */
+.pokevtt h1,
+.pokevtt h2,
+.pokevtt h3,
+.pokevtt h4,
+.pokevtt h5,
+.pokevtt h6,
+.pokevtt .tabs .item.active,
+.pokevtt .dice-total,
+.pokevtt .item.active,
+.chat-message .dice-total,
+.chat-message h1,
+.chat-message h2,
+.chat-message h3,
+.chat-message h4 {
+  color: var(--color-yellow-bright) !important;
+}
+
+/* Elementos secundarios y bordes */
+.pokevtt input[type="text"],
+.pokevtt input[type="number"],
+.pokevtt select,
+.pokevtt .items-list .item,
+.pokevtt input::placeholder,
+.pokevtt select option,
+.pokevtt .type-select option {
+  border-color: var(--color-yellow-dim) !important;
+  color: var(--color-yellow-main) !important;
+}
+
+/* Asegurar que los selectores de tipo usen el color correcto */
+.pokevtt select,
+.pokevtt select option,
+.pokevtt .type-select,
+.pokevtt .type-select option {
+  color: var(--color-yellow-main) !important;
+}
+
+/* Asegurar que los iconos y controles usen el color correcto */
+.pokevtt .fas,
+.pokevtt .far,
+.pokevtt .fab,
+.pokevtt .item-control {
+  color: var(--color-yellow-main) !important;
+}
+
+/* Headers de items y controles */
+.pokevtt .items-list .items-header,
+.pokevtt .items-list .item-controls,
+.pokevtt .items-list .item-control {
+  color: var(--color-yellow-main) !important;
+}
+
+/* Asegurar que los mensajes de chat usen los colores correctos */
+.chat-message .message-header,
+.chat-message .dice-formula,
+.chat-message .item-name,
+.chat-message .item-type {
+  color: var(--color-yellow-main) !important;
+}
+
+/* Asegurar que todos los elementos name tengan el color correcto */
+.pokevtt .charname,
+.pokevtt .charname input,
+.pokevtt .item-name,
+.pokevtt .item-name h4,
+.pokevtt .items-list .item-name,
+.pokevtt .items-list .item .item-name,
+.pokevtt input[name="name"],
+.chat-message .item-name,
+.chat-message .message-sender,
+.pokevtt .name-types-container .charname,
+.pokevtt .name-types-container input[name="name"] {
+  color: var(--color-yellow-main) !important;
+}
+
+/* Asegurar que los nombres en las listas de items sean visibles */
+.pokevtt .directory-list .item-name,
+.pokevtt .items-list .item-name input {
+  color: var(--color-yellow-main) !important;
+  background: rgba(52, 152, 219, 0.2);
+}
+
+/* Headers de nombres en listas */
+.pokevtt .items-list .items-header .item-name {
+  color: var(--color-yellow-main) !important;
+}
+
+/* Contenedor para nombre y tipos */
+.name-types-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+/* Ajustar el nombre */
+.name-types-container .charname {
+  flex: 1;
+  margin: 0;
+}
+
+/* Contenedor de tipos compacto */
+.types-compact {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  min-width: 200px; /* Asegura espacio para los dos selectores */
+}
+
+/* Selectores de tipo más compactos */
+.type-select {
+  height: 24px;
+  font-size: 12px;
+  padding: 2px;
+  width: 90px;
+  background: rgba(52, 152, 219, 0.2);
+  border: 1px solid var(--color-yellow-dim);
+  border-radius: 3px;
+  color: var(--color-yellow-main) !important;
+}
+
+/* Asegurar que los tipos estén alineados con el nombre */
+.name-types-container input[name="name"] {
+  height: 24px;
+  margin: 0;
+}
+.pokevtt .charname {
+  font-family: 'VT323', monospace;
+  font-size: 1.8em;
+}
+
+.pokevtt .charname input {
+  font-size: inherit;
+}
+
+/* Selectores de tipo más pequeños */
+.pokevtt select[name^="system.types"] {
+  font-family: 'VT323', monospace;
+  font-size: 0.9em;
+  height: 24px;
+}
+
+/* Sección de features más pequeña */
+.pokevtt .items-list .items-header {
+  font-family: 'VT323', monospace;
+  font-size: 1em;
+}
+
+.pokevtt .items-list .item-name h4 {
+  font-family: 'VT323', monospace;
+  font-size: 1em;
+}
+
+.pokevtt .items-list .item-controls {
+  font-family: 'VT323', monospace;
+  font-size: 0.9em;
+}
+
+/* Unificar números de atributos para todos los tipos de actor */
+.pokevtt input[type="number"],
+.pokevtt.sheet.actor.pokemon input[type="number"],
+.pokevtt.sheet.actor.trainer input[type="number"] {
+  font-family: 'VT323', monospace;
+  font-size: 1.4em;
+}
+
+/* Estilos para encabezados de tiradas */
+.chat-message .dice-roll h4 {
+  font-family: 'VT323', monospace;
+  font-size: 1em;
+  color: var(--color-yellow-main) !important;
+}
+
+/* Estilos específicos para la dificultad */
+.chat-message .difficulty-roll .dice-formula,
+.chat-message .difficulty-roll .dice-total {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.6em;
+  color: var(--color-yellow-main) !important;
+}
+
+/* Mantener los estilos de daño en rojo */
+.chat-message .damage-roll h4 {
+  font-family: 'VT323', monospace;
+  font-size: 1em;
+  color: #ff4444 !important;
+}
+
+/* Colores por tipo de movimiento en español */
+.pokevtt .items-list .item[data-move-type="normal"] h4 { color: #A8A878 !important; }
+.pokevtt .items-list .item[data-move-type="fuego"] h4 { color: #F08030 !important; }
+.pokevtt .items-list .item[data-move-type="agua"] h4 { color: #6890F0 !important; }
+.pokevtt .items-list .item[data-move-type="electrico"] h4 { color: #F8D030 !important; }
+.pokevtt .items-list .item[data-move-type="planta"] h4 { color: #78C850 !important; }
+.pokevtt .items-list .item[data-move-type="hielo"] h4 { color: #98D8D8 !important; }
+.pokevtt .items-list .item[data-move-type="lucha"] h4 { color: #C03028 !important; }
+.pokevtt .items-list .item[data-move-type="veneno"] h4 { color: #A040A0 !important; }
+.pokevtt .items-list .item[data-move-type="tierra"] h4 { color: #E0C068 !important; }
+.pokevtt .items-list .item[data-move-type="volador"] h4 { color: #A890F0 !important; }
+.pokevtt .items-list .item[data-move-type="psiquico"] h4 { color: #F85888 !important; }
+.pokevtt .items-list .item[data-move-type="bicho"] h4 { color: #A8B820 !important; }
+.pokevtt .items-list .item[data-move-type="roca"] h4 { color: #B8A038 !important; }
+.pokevtt .items-list .item[data-move-type="fantasma"] h4 { color: #705898 !important; }
+.pokevtt .items-list .item[data-move-type="dragon"] h4 { color: #7038F8 !important; }
+.pokevtt .items-list .item[data-move-type="siniestro"] h4 { color: #705848 !important; }
+.pokevtt .items-list .item[data-move-type="acero"] h4 { color: #B8B8D0 !important; }
+.pokevtt .items-list .item[data-move-type="hada"] h4 { color: #EE99AC !important; }

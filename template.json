@@ -37,6 +37,10 @@
     },
     "pokemon": {
       "templates": ["base"],
+      "types": {
+        "primary": "normal",
+        "secondary": ""
+      },
       "level": 1,
       "abilities": {
         "fue": {
@@ -54,23 +58,27 @@
       }
     }
   },
-  "Item": {
-    "types": ["item", "feature"],
-    "templates": {
-      "base": {
-        "description": ""
+  
+    "Item": {
+      "types": ["item", "feature"],
+      "templates": {
+        "base": {
+          "description": ""
+        }
+      },
+      "feature": {
+        "moveType": "normal",
+        "hasAttackRoll": false,
+        "hasDamageRoll": false,
+        "hasDifficulty": false,
+        "attributeModifier": "",
+        "difficultyAttribute": "",
+        "defenseAttribute": "",
+        "difficultyBase": "5",
+        "roll": {
+          "diceNum": 1,
+          "diceSize": "6"
+        }
       }
-    },
-    "item": {
-      "templates": ["base"],
-      "quantity": 1,
-      "weight": 0
-    },
-    "feature": {
-      "templates": ["base"],
-
-      "bono":0,
-      "daño":0
     }
   }
-}

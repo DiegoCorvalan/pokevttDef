@@ -4,13 +4,34 @@
   <header class="sheet-header">
     <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100"/>
     <div class="header-fields">
-      <h1 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="Name"/></h1>
+      <div class="name-types-container">
+        <h1 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="Name"/></h1>
+        {{!-- Tipos del Pokémon --}}
+        <div class="types-compact">
+          <select name="system.types.primary" class="type-select">
+            {{#select system.types.primary}}
+            {{#each config.types as |name type|}}
+            <option value="{{type}}">{{name}}</option>
+            {{/each}}
+            {{/select}}
+          </select>
+          <select name="system.types.secondary" class="type-select">
+            {{#select system.types.secondary}}
+            <option value="">Ninguno</option>
+            {{#each config.types as |name type|}}
+            <option value="{{type}}">{{name}}</option>
+            {{/each}}
+            {{/select}}
+          </select>
+        </div>
+      </div>
+
       <div class="resources grid grid-3col">
         <div class="resource flex-group-center">
           <label for="system.vida.value" class="resource-label">Vida</label>
           <div class="resource-content flexrow flex-center flex-between">
             <div class="hidden-content" style="display: none;">
-            <input type="text" name="system.vida.value" value="{{system.vida.value}}" data-dtype="Number"/>
+              <input type="text" name="system.vida.value" value="{{system.vida.value}}" data-dtype="Number"/>
             </div>
             <input type="text" name="system.vida.bono" value="{{system.vida.bono}}" data-dtype="Number"/>
             <input type="text" name="system.vida.max" value="{{system.vida.max}}" data-dtype="Number"/>
@@ -94,7 +115,9 @@
     </div>
 
   </section>
-              <button id="editButton" class="small-button"></button>
+              <button id="editButton" class="small-button">
+                <i class="fas fa-edit"></i> 
+              </button>
 
 </form>
 

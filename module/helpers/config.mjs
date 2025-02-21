@@ -15,3 +15,24 @@ POKEVTT.abilityAbbreviations = {
   des: 'POKEVTT.Ability.des.abbr',
   int: 'POKEVTT.Ability.Int.abbr',
 };
+
+POKEVTT.types = {
+  normal: "Normal",
+  fuego: "Fuego",
+  agua: "Agua",
+  electrico: "Eléctrico",
+  planta: "Planta",
+  hielo: "Hielo",
+  lucha: "Lucha",
+  veneno: "Veneno",
+  tierra: "Tierra",
+  volador: "Volador",
+  psiquico: "Psíquico",
+  bicho: "Bicho",
+  roca: "Roca",
+  fantasma: "Fantasma",
+  dragon: "Dragón",
+  siniestro: "Siniestro",
+  acero: "Acero",
+  hada: "Hada"
+}; 
