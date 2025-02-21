@@ -68,7 +68,9 @@
     },
     "feature": {
       "templates": ["base"],
-      "formula": "d10"
+
+      "bono":0,
+      "daño":0
     }
   }
 }

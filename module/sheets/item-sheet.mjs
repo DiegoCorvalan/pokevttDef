@@ -39,7 +39,6 @@ export class PokevttItemSheet extends ItemSheet {
 
   /** @override */
   async getData() {
-    // Retrieve base data structure.
     const context = super.getData();
 
     // Use a safe clone of the item data for further operations.
@@ -65,8 +64,15 @@ export class PokevttItemSheet extends ItemSheet {
     context.system = itemData.system;
     context.flags = itemData.flags;
 
-    // Adding a pointer to CONFIG.POKEVTT
-    context.config = CONFIG.POKEVTT;
+    // Add actor attributes if this is a feature
+    if (this.item.type === 'feature') {
+      // Get the actor's attributes if this item belongs to an actor
+      if (this.item.actor) {
+        context.actorAttributes = this.item.actor.system.abilities;
+      }
+      // Add CONFIG reference
+      context.config = CONFIG.POKEVTT;
+    }
 
     // Prepare active effects for easier access
     context.effects = prepareActiveEffectCategories(this.item.effects);

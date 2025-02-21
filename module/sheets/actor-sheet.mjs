@@ -137,6 +137,13 @@ export class PokevttActorSheet extends ActorSheet {
     // Add Inventory Item
     html.on('click', '.item-create', this._onItemCreate.bind(this));
 
+    // Edit Inventory Item
+    html.on('click', '.item-edit', (ev) => {
+      const li = $(ev.currentTarget).parents('.item');
+      const item = this.actor.items.get(li.data('itemId'));
+      item.sheet.render(true);
+    });
+
     // Delete Inventory Item
     html.on('click', '.item-delete', (ev) => {
       const li = $(ev.currentTarget).parents('.item');
@@ -158,38 +165,81 @@ export class PokevttActorSheet extends ActorSheet {
     // Rollable abilities.
     html.on('click', '.rollable', this._onRoll.bind(this));
 
-    // *** Nuevo código para manejar las tiradas con atributo ***
     html.on('click', '.use-item-button', async (event) => {
+      console.log("Botón de uso de ítem presionado");
       event.preventDefault();
+    
+      // Obtener el ítem que se está usando
+      const itemId = event.currentTarget.closest('.item').dataset.itemId;
+      const item = this.actor.items.get(itemId);
+      
+      console.log("Item seleccionado:", item);
 
-      // Obtener los valores del formulario
-      const diceNum = parseInt(html.find('[name="system.roll.diceNum"]').val(), 10) || 0;
-      const diceSize = html.find('[name="system.roll.diceSize"]').val();
-      const attributeKey = html.find('[name="system.attributeModifier"]').val();
+      if (!item) {
+        console.warn("No se encontró el ítem");
+        return;
+      }
 
-      // Obtener el valor del atributo seleccionado
-      const attributeValue = this.actor.system.abilities[attributeKey]?.value || 0;
-
-      // Realizar la primera tirada sin modificador
-      const roll1 = new Roll(`${diceNum}d${diceSize}`).roll();
-      const result1 = roll1.total;
-
-      // Realizar la segunda tirada con el atributo como modificador
-      const roll2 = new Roll(`${diceNum}d${diceSize}+${attributeValue}`).roll();
-      const result2 = roll2.total;
-
-      // Mostrar ambos resultados en el chat
-      roll1.toMessage({
-        flavor: `Tirada sin modificador (${diceNum}d${diceSize})`,
-        speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+      // Enriquecer la descripción
+      const enrichedDescription = await TextEditor.enrichHTML(item.system.description, {
+        async: true,
+        relativeTo: item
       });
 
-      roll2.toMessage({
-        flavor: `Tirada con modificador de ${attributeKey} (${diceNum}d${diceSize}+${attributeValue})`,
-        speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+      let content = `
+        <h2>${item.name}</h2>
+        <hr>
+        ${enrichedDescription}
+      `;
+
+      // Tirada de ataque si está habilitada
+      if (item.system.hasAttackRoll) {
+        const attributeKey = item.system.attributeModifier;
+        if (!attributeKey) {
+          console.warn("Ningún atributo seleccionado en el ítem");
+          ui.notifications.warn("Este ítem no tiene un atributo seleccionado.");
+          return;
+        }
+        const attributeMod = this.actor.system.abilities?.[attributeKey]?.mod || 0;
+        const attackRoll = await new Roll(`1d10+${attributeMod}`).roll();
+        
+        content += `
+          <hr>
+          <div class="dice-roll">
+            <div class="dice-result">
+              <h4>Tirada de ataque con ${attributeKey} (1d10+${attributeMod})</h4>
+              <div class="dice-formula">${attackRoll.formula}</div>
+              <div class="dice-total">${attackRoll.total}</div>
+            </div>
+          </div>
+        `;
+      }
+
+      // Tirada de daño si está habilitada
+      if (item.system.hasDamageRoll) {
+        const diceNum = item.system.roll.diceNum || 1;
+        const diceSize = item.system.roll.diceSize || "6";
+        const damageRoll = await new Roll(`${diceNum}d${diceSize}`).roll();
+        
+        content += `
+          <hr>
+          <div class="dice-roll">
+            <div class="dice-result">
+              <h4>Daño (${diceNum}d${diceSize})</h4>
+              <div class="dice-formula">${damageRoll.formula}</div>
+              <div class="dice-total">${damageRoll.total}</div>
+            </div>
+          </div>
+        `;
+      }
+      
+      // Enviar el mensaje combinado
+      await ChatMessage.create({
+        content: content,
+        speaker: ChatMessage.getSpeaker({ actor: this.actor })
       });
     });
-
+    
     // Drag events for macros.
     if (this.actor.isOwner) {
       let handler = (ev) => this._onDragStart(ev);
