@@ -8,21 +8,25 @@
         <h1 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="Name"/></h1>
         {{!-- Tipos del Pokémon --}}
         <div class="types-compact">
-          <select name="system.types.primary" class="type-select">
-            {{#select system.types.primary}}
-            {{#each config.types as |name type|}}
-            <option value="{{type}}">{{name}}</option>
-            {{/each}}
-            {{/select}}
-          </select>
-          <select name="system.types.secondary" class="type-select">
-            {{#select system.types.secondary}}
-            <option value="">Ninguno</option>
-            {{#each config.types as |name type|}}
-            <option value="{{type}}">{{name}}</option>
-            {{/each}}
-            {{/select}}
-          </select>
+          <div class="type-container">
+            <select name="system.types.primary" class="type-select">
+              {{#select system.types.primary}}
+              {{#each config.types as |name type|}}
+              <option value="{{type}}">{{name}}</option>
+              {{/each}}
+              {{/select}}
+            </select>
+          </div>
+          <div class="type-container">
+            <select name="system.types.secondary" class="type-select">
+              {{#select system.types.secondary}}
+              <option value="">Ninguno</option>
+              {{#each config.types as |name type|}}
+              <option value="{{type}}">{{name}}</option>
+              {{/each}}
+              {{/select}}
+            </select>
+          </div>
         </div>
       </div>
 

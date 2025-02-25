@@ -51,7 +51,7 @@ export class PokevttActorSheet extends ActorSheet {
       this._prepareEntrenadorData(context);
     }
 
-    // Prepare Pokemon data and items.
+    // Prepare NPC data and items.
     if (actorData.type == 'pokemon') {
       this._prepareItems(context);
       // Enrich the pokedex text
@@ -275,11 +275,11 @@ export class PokevttActorSheet extends ActorSheet {
     
     // Drag events for macros.
     if (this.actor.isOwner) {
-      let handler = (ev) => this._onDragStart(ev);
+      let handler = ev => this._onDragStart(ev);
       html.find('li.item').each((i, li) => {
-        if (li.classList.contains('inventory-header')) return;
-        li.setAttribute('draggable', true);
-        li.addEventListener('dragstart', handler, false);
+        if (li.classList.contains("inventory-header")) return;
+        li.setAttribute("draggable", true);
+        li.addEventListener("dragstart", handler, false);
       });
     }
 
@@ -396,6 +396,14 @@ export class PokevttActorSheet extends ActorSheet {
     html.find('.pokemon-entry').each((i, li) => {
       li.setAttribute('draggable', true);
       li.addEventListener('dragstart', this._onDragPokemon.bind(this));
+    });
+
+    // Actualizar iconos cuando cambien los tipos
+    html.find('select[name^="system.types"]').change(ev => {
+      const select = ev.currentTarget;
+      const type = select.value;
+      const icon = select.closest('.type-container').querySelector('.type-icon');
+      icon.src = `systems/pokevtt/icons/${type || 'normal'}.png`;
     });
   }
 
@@ -514,5 +522,58 @@ export class PokevttActorSheet extends ActorSheet {
       actorId: pokemon.id,
       tokenData: pokemon.prototypeToken
     }));
+  }
+
+  /** @override */
+  _onDragStart(event) {
+    const li = event.currentTarget;
+    if (event.target.classList.contains("content-link")) return;
+
+    // Create drag data
+    const dragData = {
+      type: "Item",
+      actorId: this.actor.id,
+      data: this.actor.items.get(li.dataset.itemId)
+    };
+
+    // Set data transfer
+    event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
+  }
+
+  /** @override */
+  async _onDrop(event) {
+    const data = JSON.parse(event.dataTransfer.getData("text/plain"));
+
+    // Handle item drops
+    if (data.type === "Item") {
+      // Get the item from the source actor
+      let sourceActor = null;
+      if (data.actorId) {
+        sourceActor = game.actors.get(data.actorId);
+      }
+      
+      let item = sourceActor ? sourceActor.items.get(data.data._id) : game.items.get(data.data._id);
+      
+      if (!item) {
+        return console.error("Item not found", data);
+      }
+
+      // If the item is coming from another actor, we need to create a copy
+      if (sourceActor && sourceActor !== this.actor) {
+        // Create the item in the new actor
+        await this.actor.createEmbeddedDocuments("Item", [item.toObject()]);
+        
+        // Delete the item from the source actor if it was dragged
+        await sourceActor.deleteEmbeddedDocuments("Item", [item.id]);
+        
+        // Show a notification
+        ui.notifications.info(`Movido ${item.name} de ${sourceActor.name} a ${this.actor.name}`);
+      }
+      // If the item is coming from the sidebar, just create it
+      else if (!sourceActor) {
+        await this.actor.createEmbeddedDocuments("Item", [item.toObject()]);
+        ui.notifications.info(`Agregado ${item.name} a ${this.actor.name}`);
+      }
+    }
   }
 }

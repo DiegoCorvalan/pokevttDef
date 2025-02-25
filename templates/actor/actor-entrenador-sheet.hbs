@@ -99,7 +99,13 @@
               {{#with (getActor pokemonId) as |pokemon|}}
                 <div class="pokemon-entry" data-pokemon-id="{{pokemon._id}}">
                   <img src="{{pokemon.img}}" width="50" height="50"/>
-                  <span class="pokemon-name">{{pokemon.name}}</span>
+                  <div class="pokemon-types">
+                    <img class="type-icon" src="systems/pokevtt/icons/{{pokemon.system.types.primary}}.png" width="16" height="16"/>
+                    {{#if pokemon.system.types.secondary}}
+                    <img class="type-icon" src="systems/pokevtt/icons/{{pokemon.system.types.secondary}}.png" width="16" height="16"/>
+                    {{/if}}
+                  </div>
+                  <span class="pokemon-name">{{pokemon.name}} <span class="pokemon-level">Lv{{pokemon.system.level}}</span></span>
                   <div class="pokemon-controls">
                     <a class="pokemon-control move-to-pc"><i class="fas fa-box"></i></a>
                     <a class="pokemon-control remove-pokemon"><i class="fas fa-times"></i></a>
@@ -120,7 +126,13 @@
               {{#with (getActor pokemonId) as |pokemon|}}
                 <div class="pokemon-entry" data-pokemon-id="{{pokemon._id}}">
                   <img src="{{pokemon.img}}" width="50" height="50"/>
-                  <span class="pokemon-name">{{pokemon.name}}</span>
+                  <div class="pokemon-types">
+                    <img class="type-icon" src="systems/pokevtt/icons/{{pokemon.system.types.primary}}.png" width="16" height="16"/>
+                    {{#if pokemon.system.types.secondary}}
+                    <img class="type-icon" src="systems/pokevtt/icons/{{pokemon.system.types.secondary}}.png" width="16" height="16"/>
+                    {{/if}}
+                  </div>
+                  <span class="pokemon-name">{{pokemon.name}} <span class="pokemon-level">Lv{{pokemon.system.level}}</span></span>
                   <div class="pokemon-controls">
                     <a class="pokemon-control move-to-team"><i class="fas fa-users"></i></a>
                     <a class="pokemon-control remove-pokemon"><i class="fas fa-times"></i></a>

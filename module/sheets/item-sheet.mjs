@@ -96,6 +96,13 @@ export class PokevttItemSheet extends ItemSheet {
     html.on('click', '.effect-control', (ev) =>
       onManageActiveEffect(ev, this.item)
     );
+
+    // Actualizar la imagen cuando cambie el tipo
+    html.find('select[name="system.moveType"]').change(ev => {
+      const moveType = ev.currentTarget.value;
+      const img = html.find('img.profile-img');
+      img.attr('src', `systems/pokevtt/icons/${moveType}.png`);
+    });
   }
 
   async _onRoll(event) {

@@ -741,6 +741,37 @@
   text-shadow: 0 0 10px #FFE082;
 }
 
+/* Estilos para imágenes de movimientos */
+.item-image {
+  border: none !important;
+  background: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.item-image img {
+  border: none !important;
+  background: none !important;
+  object-fit: contain !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.item-image:hover {
+  box-shadow: none !important;
+}
+
+.item .item-image {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.item .item-image a {
+  border: none !important;
+  background: transparent !important;
+}
+
 /* Colores base para todos los elementos */
 .pokevtt {
   color: #FFE082;
@@ -1340,4 +1371,20 @@
 .add-pokemon {
   width: 100%;
   margin-top: 10px;
+}
+
+/* Estilos para el nivel del Pokémon */
+.pokemon-level {
+  font-size: 0.85em;
+  color: #FFD700;
+  margin-left: 5px;
+  font-family: 'VT323', monospace;
+}
+
+/* Ajuste del contenedor del nombre para alinear nivel */
+.pokemon-name {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex: 1;
 }
