@@ -273,7 +273,7 @@ export class PokevttActorSheet extends ActorSheet {
       });
     });
     
-    // Drag events for macros.
+    // Drag events for features
     if (this.actor.isOwner) {
       let handler = ev => this._onDragStart(ev);
       html.find('li.item').each((i, li) => {
@@ -542,38 +542,54 @@ export class PokevttActorSheet extends ActorSheet {
 
   /** @override */
   async _onDrop(event) {
-    const data = JSON.parse(event.dataTransfer.getData("text/plain"));
+    try {
+      const data = JSON.parse(event.dataTransfer.getData("text/plain"));
+      console.log("Dropped data:", data); // Para debug
 
-    // Handle item drops
-    if (data.type === "Item") {
-      // Get the item from the source actor
-      let sourceActor = null;
-      if (data.actorId) {
-        sourceActor = game.actors.get(data.actorId);
-      }
-      
-      let item = sourceActor ? sourceActor.items.get(data.data._id) : game.items.get(data.data._id);
-      
-      if (!item) {
-        return console.error("Item not found", data);
-      }
+      // Handle item drops
+      if (data.type === "Item") {
+        let itemData = null;
 
-      // If the item is coming from another actor, we need to create a copy
-      if (sourceActor && sourceActor !== this.actor) {
-        // Create the item in the new actor
-        await this.actor.createEmbeddedDocuments("Item", [item.toObject()]);
-        
-        // Delete the item from the source actor if it was dragged
-        await sourceActor.deleteEmbeddedDocuments("Item", [item.id]);
-        
-        // Show a notification
-        ui.notifications.info(`Movido ${item.name} de ${sourceActor.name} a ${this.actor.name}`);
+        // Case 1 - Item from an Actor
+        if (data.actorId && data.data) {
+          const actor = game.actors.get(data.actorId);
+          if (!actor) return;
+          const item = actor.items.get(data.data._id);
+          if (!item) return;
+          itemData = item.toObject();
+        }
+        // Case 2 - Item from the sidebar
+        else if (data.uuid) {
+          const item = await fromUuid(data.uuid);
+          if (!item) return;
+          itemData = item.toObject();
+        }
+        // Case 3 - Direct item data
+        else if (data.data) {
+          itemData = data.data;
+        }
+
+        if (!itemData) {
+          console.error("No valid item data found");
+          return;
+        }
+
+        // Verificar si es un feature y si el actor es un Pokémon
+        if (itemData.type === "feature" && this.actor.type === "pokemon") {
+          try {
+            await this.actor.createEmbeddedDocuments("Item", [itemData]);
+            ui.notifications.info(`${itemData.name} añadido a ${this.actor.name}`);
+          } catch (error) {
+            console.error(error);
+            ui.notifications.error("No se pudo añadir el movimiento");
+          }
+        } else {
+          await this.actor.createEmbeddedDocuments("Item", [itemData]);
+        }
       }
-      // If the item is coming from the sidebar, just create it
-      else if (!sourceActor) {
-        await this.actor.createEmbeddedDocuments("Item", [item.toObject()]);
-        ui.notifications.info(`Agregado ${item.name} a ${this.actor.name}`);
-      }
+    } catch (error) {
+      console.error("Error in _onDrop:", error);
+      ui.notifications.error("Error al procesar el item arrastrado");
     }
   }
 }
