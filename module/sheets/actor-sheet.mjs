@@ -227,6 +227,19 @@ export class PokevttActorSheet extends ActorSheet {
         `;
       }
 
+        // Distancia
+        if (item.system.showDistance) {
+          const Distance = item.system.distance;
+          content += `
+            <hr>
+            <div class="dice-roll attack-roll">
+              <div class="dice-result">
+                <h4>Distancia ${Distance}</h4>
+              </div>
+            </div>
+          `;
+        }
+
       // Tirada de ataque si está habilitada
       if (item.system.hasAttackRoll) {
         const attributeKey = item.system.attributeModifier;
@@ -236,14 +249,28 @@ export class PokevttActorSheet extends ActorSheet {
           return;
         }
         const attributeMod = this.actor.system.abilities?.[attributeKey]?.mod || 0;
-        const attackRoll = await new Roll(`1d10+${attributeMod}`).roll();
         
+        // Realizar la tirada de dado
+        const roll = new Roll(`1d10`);
+        const attackRoll = await roll.roll();
+        
+        // Mensajes de Pifia y Crítico basados en el resultado del dado
+        let critMessage = "";
+        if (attackRoll.total === 1) {
+          critMessage = "<br><strong>¡Pifia!</strong>";
+        } else if (attackRoll.total === 10) {
+          critMessage = "<br><strong>¡Crítico!</strong>";
+        }
+
+        // Sumar el modificador al resultado de la tirada
+        const finalTotal = attackRoll.total + attributeMod;
+
         content += `
           <hr>
           <div class="dice-roll attack-roll">
             <div class="dice-result">
               <h4>Tirada de ataque</h4>
-              <div class="dice-total">${attackRoll.total}</div>
+              <div class="dice-total">${finalTotal} ${critMessage}</div>
             </div>
           </div>
         `;
@@ -591,5 +618,27 @@ export class PokevttActorSheet extends ActorSheet {
       console.error("Error in _onDrop:", error);
       ui.notifications.error("Error al procesar el item arrastrado");
     }
+  }
+
+  async _onCreateToken(data) {
+    // Asegúrate de que el token tenga visión habilitada
+    data.vision = true; // Habilitar visión
+    data.dimSight = 60; // Distancia de visión en pies (ajusta según sea necesario)
+    data.darkVision = 60; // Visión en la oscuridad (ajusta según sea necesario)
+
+    // Llama a la función de creación de token
+    await super._onCreateToken(data);
+  }
+
+  async _onCreateActor(data) {
+    // Asegúrate de que el token tenga visión habilitada
+    data.token = {
+      vision: true, // Habilitar visión
+      dimSight: 60, // Distancia de visión en pies (ajusta según sea necesario)
+      darkVision: 60 // Visión en la oscuridad (ajusta según sea necesario)
+    };
+
+    // Llama a la función de creación de actor
+    await super._onCreateActor(data);
   }
 }

@@ -11,9 +11,9 @@
       </a>
     </div>
   </li>
-  {{#each features as |item id|}}
-    <li class='item flexrow' data-item-id='{{item._id}}' data-move-type='{{item.system.moveType}}' draggable='true'>
-      <div class='item-name'>
+  {{#each features as |item|}}
+    <li class='item flexrow' data-item-id='{{item._id}}' draggable='true'>
+      <div class='item-name' style="flex: 1;">
         <div class='item-image'>
           <a class='use-item-button' data-roll-type='item'>
             <img
@@ -24,9 +24,21 @@
             />
           </a>
         </div>
-        <h4>{{item.name}}</h4>
+        <h4 class="feature-name">{{item.name}}</h4>
       </div>
-      <div class='item-formula item-prop'>{{item.system.formula}}</div>
+      <div class='item-description' style="flex: 2; margin-left: 10px;">
+        {{#if item.system.description}}
+          {{item.system.description}}
+        {{/if}}
+      </div>
+      <div class='item-roll' style="flex: 1;">
+        {{#if item.system.roll}}
+          <p class="item-damage">Daño: D{{item.system.roll.diceSize}}</p>
+        {{/if}}
+        {{#if item.system.showDistance}}
+          <p class="item-distance">Distancia: {{item.system.distance}} pies</p>
+        {{/if}}
+      </div>
       <div class='item-controls'>
         <a
           class='item-control item-edit'
