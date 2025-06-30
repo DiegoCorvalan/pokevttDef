@@ -28,15 +28,15 @@
       </div>
       <div class='item-description' style="flex: 2; margin-left: 10px;">
         {{#if item.system.description}}
-          {{item.system.description}}
+          {{{item.system.description}}}
         {{/if}}
       </div>
       <div class='item-roll' style="flex: 1;">
-        {{#if item.system.roll}}
+        {{#if item.system.hasDamageRoll}}
           <p class="item-damage">Daño: D{{item.system.roll.diceSize}}</p>
         {{/if}}
         {{#if item.system.showDistance}}
-          <p class="item-distance">Distancia: {{item.system.distance}} pies</p>
+          <p class="item-distance">Distancia: {{item.system.distance}} mts</p>
         {{/if}}
       </div>
       <div class='item-controls'>

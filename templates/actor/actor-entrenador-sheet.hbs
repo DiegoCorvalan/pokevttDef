@@ -18,17 +18,13 @@
           <label for="system.health.value" class="resource-label">Vida</label>
           <div class="resource-content flexrow flex-center flex-between">
           <input type="text" name="system.health.value" value="{{system.health.value}}" data-dtype="Number"/>
-          <span> / </span>
-          <input type="text" name="system.health.max" value="{{system.health.max}}" data-dtype="Number"/>
           </div>
         </div>
 
         <div class="resource flex-group-center">
-          <label for="system.power.value" class="resource-label">Estamina</label>
+          <label for="system.power.value" class="resource-label">Medallas</label>
           <div class="resource-content flexrow flex-center flex-between">
           <input type="text" name="system.power.value" value="{{system.power.value}}" data-dtype="Number"/>
-          <span> / </span>
-          <input type="text" name="system.power.max" value="{{system.power.max}}" data-dtype="Number"/>
           </div>
         </div>
 
@@ -93,7 +89,12 @@
     <div class="tab pokemon" data-group="primary" data-tab="pokemon">
       <div class="pokemon-container">
         <section class="equipo">
-          <h2>Equipo</h2>
+          <div class="flexrow" style="align-items: center; justify-content: space-between; margin-bottom: 5px;">
+            <h2>Equipo</h2>
+            <button type="button" class="rest-all-pokemon">
+                <i class="fas fa-bed"></i> Descansar
+            </button>
+          </div>
           <div class="pokemon-list" data-count="{{system.equipo.length}}">
             {{#each system.equipo as |pokemonId|}}
               {{#with (getActor pokemonId) as |pokemon|}}

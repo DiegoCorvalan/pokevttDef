@@ -55,11 +55,13 @@ export class PokevttActor extends Actor {
 
     // Loop through ability scores, and add their modifiers to our sheet output.
     for (let [key, ability] of Object.entries(systemData.abilities)) {
-      // Calculate the modifier using d20 rules.
-      ability = Math.floor(ability.value );
+      // Calculate the modifier.
+      ability.mod = Math.floor((ability.value || 0) + (ability.bono || 0));
     }
 
-    
+    // Add velocidad
+    const desMod = systemData.abilities.des.mod || 0;
+    systemData.velocidad = Math.floor(desMod / 2) + 1;
   }
 
   /**
@@ -75,8 +77,13 @@ export class PokevttActor extends Actor {
       // Calculate the modifier using d20 rules.
       ability.mod = Math.floor(ability.value + ability.bono);
     }
+
+    // Add velocidad
+    const desMod = systemData.abilities.des.mod || 0;
+    systemData.velocidad = Math.floor(desMod / 2) + 1;
+
     systemData.defensa.final = systemData.defensa.value + systemData.defensa.bono;
-    systemData.vida.final = systemData.vida.value + systemData.vida.bono;
+    systemData.vida.final = (systemData.vida.value || 0) + ((systemData.vida.bono || 0) * 2);
 
 }
 
@@ -120,7 +127,16 @@ export class PokevttActor extends Actor {
   _getpokemonRollData(data) {
     if (this.type !== 'pokemon') return;
 
-    // Process additional Pokemon data here.
+    // Copy the ability scores to the top level, so that rolls can use
+    // formulas like `@fue.mod + 4`.
+    if (data.abilities) {
+      for (let [k, v] of Object.entries(data.abilities)) {
+        data[k] = foundry.utils.deepClone(v);
+      }
+    }
+
+    // Add level for easier access, or fall back to 0.
+    data.lvl = data.level ?? 0;
   }
 }
 

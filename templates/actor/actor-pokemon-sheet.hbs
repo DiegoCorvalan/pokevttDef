@@ -30,7 +30,7 @@
         </div>
       </div>
 
-      <div class="resources grid grid-3col">
+      <div class="resources grid grid-4col">
         <div class="resource flex-group-center">
                     <label for="system.vida.value" class="resource-label">Vida</label>
           <div class="resource-header flexrow">
@@ -47,7 +47,6 @@
             </div>
             <input type="text" name="system.vida.bono" value="{{system.vida.bono}}" data-dtype="Number"/>
             <input type="text" name="system.vida.max" value="{{system.vida.max}}" data-dtype="Number"/>
-            <span> / </span>
             <input type="text" disabled="true" name="system.vida.final" value="{{system.vida.final}}" data-dtype="Number"/>
           </div>
         </div>
@@ -69,11 +68,19 @@
           </div>
         </div>
         <div class="resource flex-group-center">
+          <label for="system.velocidad" class="resource-label">Velocidad</label>
+          <div class="header-item" style="flex: 1; text-align: center;">Final</div>
+          <div class="resource-content flexrow flex-center flex-between">
+            <input type="text" name="system.velocidad" value="{{system.velocidad}}" data-dtype="Number" disabled="true"/>
+          </div>
+        </div>
+        <div class="resource flex-group-center">
           <label for="system.level" class="resource-label">Nivel</label>
           <div class="resource-content flexrow flex-center flex-between">
             <input type="text" name="system.level" value="{{system.level}}" data-dtype="Number"/>
           </div>
         </div>
+
       </div>
     </div>
   </header>
@@ -121,6 +128,12 @@
 
     {{!-- Pokedex Tab --}}
     <div class="tab description" data-group="primary" data-tab="description">
+      <div class="flexrow" style="align-items: center; justify-content: space-between; margin-bottom: 5px;">
+        <h3>Pokédex</h3>
+        <button type="button" class="send-pokedex-to-chat">
+          <i class="fas fa-comment"></i> Enviar al Chat
+        </button>
+      </div>
       {{editor enrichedPokedex target="system.pokedex" engine="prosemirror" button=true editable=editable}}
     </div>
 

@@ -1,7 +1,10 @@
 <ol class='items-list'>
   <li class='item flexrow items-header'>
-    <div class='item-name'>{{localize 'Name'}}</div>
-    <div class='item-formula'>Fórmula de Tirada</div>
+    <div class='item-name' style="flex: 1;">{{localize 'Name'}}</div>
+    <div class='item-description' style="flex: 2; margin-left: 10px;">Descripción</div>
+    <div class='item-quantity' style="flex: 0.5; text-align: center;">Cantidad</div>
+    <div class='item-price' style="flex: 0.5; text-align: center;">Precio</div>
+    <div class='item-formula' style="flex: 1;">Bono</div>
     <div class='item-controls'>
       <a
         class='item-control item-create'
@@ -15,7 +18,7 @@
   </li>
   {{#each gear as |item id|}}
     <li class='item flexrow' data-item-id='{{item._id}}' draggable='true'>
-      <div class='item-name'>
+      <div class='item-name' style="flex: 1;">
         <div class='item-image'>
           <a class='rollable' data-roll-type='item'>
             <img
@@ -28,7 +31,33 @@
         </div>
         <h4>{{item.name}}</h4>
       </div>
-      <div class='item-formula item-prop'>{{item.system.roll.diceNum}}{{item.system.roll.diceSize}}{{#if item.system.roll.diceBonus}} + {{item.system.roll.diceBonus}}{{/if}}</div>
+      <div class='item-description' style="flex: 2; margin-left: 10px;">
+        {{#if item.system.description}}
+          {{{item.system.description}}}
+        {{/if}}
+      </div>
+      <div class='item-quantity' style="flex: 0.5; text-align: center;">
+        <div class="quantity-controls" style="display: flex; align-items: center; justify-content: center; gap: 5px;">
+          <button type="button" class="quantity-btn decrease" data-item-id="{{item._id}}" style="width: 20px; height: 20px; padding: 0; font-size: 12px;">-</button>
+          <span class="quantity-value">{{item.system.quantity}}</span>
+          <button type="button" class="quantity-btn increase" data-item-id="{{item._id}}" style="width: 20px; height: 20px; padding: 0; font-size: 12px;">+</button>
+        </div>
+      </div>
+      <div class='item-price' style="flex: 0.5; text-align: center;">
+        {{item.system.weight}}
+      </div>
+      <div class='item-formula item-prop' style="flex: 1;">
+        {{#if item.system.roll.diceNum}}
+          {{#if (gt item.system.roll.diceNum 0)}}
+            {{item.system.roll.diceNum}}{{item.system.roll.diceSize}}
+          {{/if}}
+        {{/if}}
+        {{#if item.system.roll.diceBonus}}
+          {{#if (and item.system.roll.diceNum (gt item.system.roll.diceNum 0))}}+ {{/if}}{{item.system.roll.diceBonus}}
+        {{else}}
+          {{#unless (and item.system.roll.diceNum (gt item.system.roll.diceNum 0))}}0{{/unless}}
+        {{/if}}
+      </div>
       <div class='item-controls'>
         <a
           class='item-control item-edit'

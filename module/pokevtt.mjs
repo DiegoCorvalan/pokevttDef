@@ -29,7 +29,7 @@ Hooks.once('init', function () {
    * @type {String}
    */
   CONFIG.Combat.initiative = {
-    formula: '1d10 + @abilities.des',
+    formula: '1d10 + @des.mod',
     decimals: 2,
   };
 
@@ -71,9 +71,80 @@ Handlebars.registerHelper('toLowerCase', function (fue) {
 /*  Ready Hook                                  */
 /* -------------------------------------------- */
 
-Hooks.once('ready', function () {
+Hooks.once('ready', async function () {
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
   Hooks.on('hotbarDrop', (bar, data, slot) => createItemMacro(data, slot));
+
+  // Setting for the event actor
+  game.settings.register('pokevtt', 'eventActorId', {
+    name: 'Event Actor ID',
+    scope: 'world',
+    config: false,
+    type: String,
+    default: '',
+  });
+
+  let eventActorId = game.settings.get('pokevtt', 'eventActorId');
+  let eventActor = game.actors.get(eventActorId);
+
+  if (!eventActor) {
+    console.log("POKEVTT | Creating special event actor 'Entrenadores'");
+    const actorData = {
+        name: 'Entrenadores',
+        type: 'pokemon',
+        img: 'worlds/poo/Imagenes/Sprites/Generico37.png', // Custom image
+        system: {
+            abilities: {
+                fue: { value: 0, bono: 0 },
+                des: { value: 0, bono: 0 },
+                int: { value: 0, bono: 0 },
+            },
+            defensa: { value: 0, bono: 0 },
+            vida: { value: 1, max: 1, bono: 0 }
+        }
+    };
+    eventActor = await Actor.create(actorData);
+    await game.settings.set('pokevtt', 'eventActorId', eventActor.id);
+  }
+});
+
+/* -------------------------------------------- */
+/*  Combat Hooks                                */
+/* -------------------------------------------- */
+
+Hooks.on('createCombat', async (combat, options, userId) => {
+  // Only run for the user who created the combat
+  if (userId !== game.user.id) return;
+
+  console.log("POKEVTT | New combat created. Adding 'Entrenadores' event.");
+  const eventActorId = game.settings.get('pokevtt', 'eventActorId');
+  if (!eventActorId) {
+      ui.notifications.error("POKEVTT | Could not find the special event actor ID.");
+      return;
+  }
+
+  const eventActor = game.actors.get(eventActorId);
+  if (!eventActor) {
+      ui.notifications.error("POKEVTT | Could not find the special event actor.");
+      return;
+  }
+
+  // Check if the combatant is already there to prevent duplicates
+  const existing = combat.combatants.find(c => c.actorId === eventActor.id);
+  if (existing) return;
+
+  // Create and add the new combatant
+  const combatantData = {
+      actorId: eventActor.id,
+      hidden: false
+  };
+  
+  const [combatant] = await combat.createEmbeddedDocuments("Combatant", [combatantData]);
+  
+  // Update the combatant's initiative to 0
+  await combat.setInitiative(combatant.id, 0);
+
+  console.log("POKEVTT | 'Entrenadores' event added to combat with initiative 0.");
 });
 
 /* -------------------------------------------- */

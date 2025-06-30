@@ -12,7 +12,7 @@ export class PokevttActorSheet extends ActorSheet {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ['pokevtt', 'sheet', 'actor'],
-      width: 700,
+      width: 1000,
       height: 600,
       tabs: [
         {
@@ -209,7 +209,7 @@ export class PokevttActorSheet extends ActorSheet {
           case 5:
             difficultyText = "Normal";
             break;
-          case 8:
+          case 7:
             difficultyText = "Difícil";
             break;
           default:
@@ -284,11 +284,24 @@ export class PokevttActorSheet extends ActorSheet {
         
         content += `
           <hr>
-          <div class="dice-roll damage-roll">
-            <div class="dice-result">
-              <h4>Daño</h4>
-              <div class="dice-total">${damageRoll.total}</div>
+          <div class="damage-roll-container" data-base-damage="${damageRoll.total}" data-actor-id="${this.actor.id}" data-item-name="${item.name}">
+            <div class="dice-roll damage-roll">
+              <div class="dice-result">
+                <h4>Daño Base</h4>
+                <div class="dice-total">${damageRoll.total}</div>
+              </div>
             </div>
+            <details>
+              <summary>Modificadores de Daño</summary>
+              <div class="damage-modifiers" style="margin-top: 5px;">
+                <div><label><input type="checkbox" data-modifier="critico"> Crítico</label></div>
+                <div><label><input type="checkbox" data-modifier="superefectivo"> Superefectivo</label></div>
+                <div><label><input type="checkbox" data-modifier="hiperefectivo"> Hiperefectivo</label></div>
+                <div><label><input type="checkbox" data-modifier="debilitado"> Debilitado</label></div>
+                <div><label><input type="checkbox" data-modifier="empoderado"> Empoderado</label></div>
+              </div>
+              <button type="button" class="apply-damage-modifiers" style="margin-top: 5px;">Aplicar</button>
+            </details>
           </div>
         `;
       }
@@ -425,12 +438,94 @@ export class PokevttActorSheet extends ActorSheet {
       li.addEventListener('dragstart', this._onDragPokemon.bind(this));
     });
 
+    // Rest all Pokémon button
+    html.find('.rest-all-pokemon').click(async (ev) => {
+      ev.preventDefault();
+      const allPokemonIds = [...this.actor.system.equipo, ...this.actor.system.pc];
+
+      if (allPokemonIds.length === 0) {
+          ui.notifications.info("No hay Pokémon para descansar.");
+          return;
+      }
+
+      const updates = [];
+      for (const pokemonId of allPokemonIds) {
+          const pokemon = game.actors.get(pokemonId);
+          console.log(pokemon.system.vida.final)
+          if (pokemon && pokemon.type === 'pokemon') {
+              const maxHealth = pokemon.system.vida.final;
+              updates.push({
+                  _id: pokemon.id,
+                  'system.vida.max': maxHealth
+              });
+          }
+      }
+      
+      if (updates.length > 0) {
+          await Actor.updateDocuments(updates);
+          ui.notifications.info("¡Todos los Pokémon han descansado y recuperado su salud!");
+      }
+      this.render();
+    });
+
     // Actualizar iconos cuando cambien los tipos
     html.find('select[name^="system.types"]').change(ev => {
       const select = ev.currentTarget;
       const type = select.value;
       const icon = select.closest('.type-container').querySelector('.type-icon');
       icon.src = `systems/pokevtt/icons/${type || 'normal'}.png`;
+    });
+
+    // Send Pokédex to chat
+    html.find('.send-pokedex-to-chat').click(async (ev) => {
+      ev.preventDefault();
+      
+      if (!this.actor.system.pokedex) {
+        ui.notifications.warn("Este Pokémon no tiene una entrada en la Pokédex.");
+        return;
+      }
+
+      const enrichedPokedex = await TextEditor.enrichHTML(this.actor.system.pokedex, {
+        secrets: this.actor.isOwner,
+        async: true,
+        relativeTo: this.actor
+      });
+
+      const content = `
+        <div class="pokedex-entry">
+          <h2>${this.actor.name} - Pokédex</h2>
+          <div class="pokedex-content">
+            ${enrichedPokedex}
+          </div>
+        </div>
+      `;
+
+      await ChatMessage.create({
+        content: content,
+        speaker: ChatMessage.getSpeaker({ actor: this.actor })
+      });
+    });
+
+    // Quantity controls
+    html.find('.quantity-btn').click(async (ev) => {
+      ev.preventDefault();
+      const button = ev.currentTarget;
+      const itemId = button.dataset.itemId;
+      const isIncrease = button.classList.contains('increase');
+      
+      const item = this.actor.items.get(itemId);
+      if (!item) return;
+      
+      const currentQuantity = item.system.quantity || 0;
+      const newQuantity = Math.max(0, currentQuantity + (isIncrease ? 1 : -1));
+      
+      await item.update({ 'system.quantity': newQuantity });
+      
+      // Update the display immediately
+      const quantitySpan = button.parentElement.querySelector('.quantity-value');
+      if (quantitySpan) {
+        quantitySpan.textContent = newQuantity;
+      }
     });
   }
 
@@ -635,10 +730,62 @@ export class PokevttActorSheet extends ActorSheet {
     data.token = {
       vision: true, // Habilitar visión
       dimSight: 60, // Distancia de visión en pies (ajusta según sea necesario)
-      darkVision: 60 // Visión en la oscuridad (ajusta según sea necesario)
+      darkVision: 60,// Visión en la oscuridad (ajusta según sea necesario)
     };
 
     // Llama a la función de creación de actor
     await super._onCreateActor(data);
   }
 }
+
+Hooks.on('renderChatMessage', (message, html, data) => {
+  const applyButton = html.find('.apply-damage-modifiers');
+  if (applyButton.length > 0) {
+    applyButton.on('click', async (event) => {
+      const button = $(event.currentTarget);
+      const container = button.closest('.damage-roll-container');
+      const baseDamage = parseInt(container.data('base-damage'));
+      const actorId = container.data('actor-id');
+      const itemName = container.data('item-name');
+      const actor = game.actors.get(actorId);
+
+      const modifiers = container.find('.damage-modifiers input:checked');
+      const numModifiers = modifiers.length;
+      
+      const finalDamage = baseDamage * (1 + numModifiers);
+
+      let modifiersText = "Modificadores aplicados: ";
+      if (modifiers.length > 0) {
+        modifiersText += Array.from(modifiers).map(m => $(m).parent().text().trim()).join(', ');
+      } else {
+        modifiersText += "Ninguno";
+      }
+
+      const chatContent = `
+        <h3>Daño final de ${itemName}</h3>
+        <p>${modifiersText}</p>
+        <h2>Daño total: ${finalDamage}</h2>
+      `;
+
+      await ChatMessage.create({
+        content: chatContent,
+        speaker: ChatMessage.getSpeaker({ actor: actor })
+      });
+
+      // Para actualizar el mensaje original, necesitamos su ID
+      const messageId = message.id;
+      const originalMessage = game.messages.get(messageId);
+      if (originalMessage) {
+        let content = originalMessage.content;
+        
+        // Desactivamos el botón y los checkboxes en el HTML del mensaje
+        const newHtml = $(`<div>${content}</div>`);
+        newHtml.find('.apply-damage-modifiers').prop('disabled', true);
+        newHtml.find('.damage-modifiers input').prop('disabled', true);
+        
+        // Actualizamos el contenido del mensaje
+        await originalMessage.update({ content: newHtml.html() });
+      }
+    });
+  }
+});

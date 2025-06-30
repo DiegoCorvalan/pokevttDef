@@ -1388,3 +1388,72 @@
   gap: 5px;
   flex: 1;
 }
+
+/* Max health field styling */
+.pokevtt input[name="system.vida.max"] {
+  color: #4caf50 !important;
+  font-weight: bold !important;
+}
+
+/* Calculated fields styling (non-editable) - no borders */
+.pokevtt input[name="system.vida.final"],
+.pokevtt input[name="system.defensa.final"],
+.pokevtt input[name="system.velocidad"] {
+  background: transparent !important;
+  border: none !important;
+  color: #666 !important;
+  font-style: italic !important;
+  box-shadow: none !important;
+}
+
+.pokevtt input[name="system.vida.final"]:disabled,
+.pokevtt input[name="system.defensa.final"]:disabled,
+.pokevtt input[name="system.velocidad"]:disabled {
+  background: transparent !important;
+  color: #888 !important;
+}
+
+/* Item description styling */
+.pokevtt .item-description p {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.pokevtt .item-description p:first-child {
+  margin-top: 0 !important;
+}
+
+.pokevtt .item-description p:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* Quantity controls styling */
+.pokevtt .quantity-btn {
+  background: #4a90e2 !important;
+  color: white !important;
+  border: 1px solid #357abd !important;
+  border-radius: 3px !important;
+  cursor: pointer !important;
+  font-weight: bold !important;
+  transition: background-color 0.2s !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+  padding: 0 !important;
+}
+
+.pokevtt .quantity-btn:hover {
+  background: #357abd !important;
+}
+
+.pokevtt .quantity-btn:active {
+  background: #2d5986 !important;
+}
+
+.pokevtt .quantity-value {
+  font-weight: bold !important;
+  min-width: 20px !important;
+  text-align: center !important;
+}
+
