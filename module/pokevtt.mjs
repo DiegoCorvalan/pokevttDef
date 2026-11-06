@@ -212,3 +212,38 @@ function rollItemMacro(itemUuid) {
     item.roll();
   });
 }
+
+/* -------------------------------------------- */
+/*  Actor Hooks                                 */
+/* -------------------------------------------- */
+
+Hooks.on('deleteActor', async (actor, options, userId) => {
+    if (actor.type === 'pokemon') {
+        console.log(`POKEVTT | Pokémon ${actor.name} deleted. Checking trainers.`);
+        const trainers = game.actors.filter(a => a.type === 'entrenador');
+        const updates = [];
+
+        for (const trainer of trainers) {
+            const equipo = trainer.system.equipo || [];
+            const pc = trainer.system.pc || [];
+
+            const newEquipo = equipo.filter(id => id !== actor.id);
+            const newPc = pc.filter(id => id !== actor.id);
+
+            // Check if there were any changes
+            if (newEquipo.length !== equipo.length || newPc.length !== pc.length) {
+                console.log(`POKEVTT | Removing ${actor.name} from trainer ${trainer.name}.`);
+                updates.push({
+                    _id: trainer.id,
+                    'system.equipo': newEquipo,
+                    'system.pc': newPc
+                });
+            }
+        }
+
+        if (updates.length > 0) {
+            await Actor.updateDocuments(updates);
+            console.log(`POKEVTT | Finished cleaning up trainer references.`);
+        }
+    }
+});

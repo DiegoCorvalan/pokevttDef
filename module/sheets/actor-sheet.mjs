@@ -2,6 +2,7 @@ import {
   onManageActiveEffect,
   prepareActiveEffectCategories,
 } from '../helpers/effects.mjs';
+import { describeMoveEffectiveness } from '../helpers/type-chart.mjs';
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -180,8 +181,14 @@ export class PokevttActorSheet extends ActorSheet {
         relativeTo: item
       });
 
+      const effectiveness = item.system.hasDamageRoll
+        ? describeMoveEffectiveness(item.system.moveType)
+        : { html: "", autoModifiers: [] };
+      const modifierChecked = (key) => effectiveness.autoModifiers.includes(key) ? "checked" : "";
+
       let content = `
         <h2>${item.name} <span style="font-size: 0.8em; color: #666;">(${CONFIG.POKEVTT.types[item.system.moveType]})</span></h2>
+        ${effectiveness.html}
         <hr>
         ${enrichedDescription}
       `;
@@ -295,8 +302,10 @@ export class PokevttActorSheet extends ActorSheet {
               <summary>Modificadores de Daño</summary>
               <div class="damage-modifiers" style="margin-top: 5px;">
                 <div><label><input type="checkbox" data-modifier="critico"> Crítico</label></div>
-                <div><label><input type="checkbox" data-modifier="superefectivo"> Superefectivo</label></div>
-                <div><label><input type="checkbox" data-modifier="hiperefectivo"> Hiperefectivo</label></div>
+                <div><label><input type="checkbox" data-modifier="superefectivo" ${modifierChecked("superefectivo")}> Superefectivo</label></div>
+                <div><label><input type="checkbox" data-modifier="hiperefectivo" ${modifierChecked("hiperefectivo")}> Hiperefectivo</label></div>
+                <div><label><input type="checkbox" data-modifier="resiste" ${modifierChecked("resiste")}> Resiste</label></div>
+                <div><label><input type="checkbox" data-modifier="megaresiste" ${modifierChecked("megaresiste")}> Mega resiste</label></div>
                 <div><label><input type="checkbox" data-modifier="debilitado"> Debilitado</label></div>
                 <div><label><input type="checkbox" data-modifier="empoderado"> Empoderado</label></div>
               </div>
@@ -750,9 +759,15 @@ Hooks.on('renderChatMessage', (message, html, data) => {
       const actor = game.actors.get(actorId);
 
       const modifiers = container.find('.damage-modifiers input:checked');
-      const numModifiers = modifiers.length;
-      
-      const finalDamage = baseDamage * (1 + numModifiers);
+      const halving = new Set(["resiste", "megaresiste"]);
+      let positive = 0;
+      let halves = 0;
+      modifiers.each((_, input) => {
+        if (halving.has(input.dataset.modifier)) halves += 1;
+        else positive += 1;
+      });
+
+      const finalDamage = Math.ceil(baseDamage * (1 + positive) / (2 ** halves));
 
       let modifiersText = "Modificadores aplicados: ";
       if (modifiers.length > 0) {

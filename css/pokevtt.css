@@ -536,6 +536,7 @@
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
   border-bottom: 1px solid rgba(255, 224, 130, 0.3);
   margin-bottom: 5px;
+  font-size: 0.85em;
 }
 
 /* Contenido del mensaje */
@@ -1455,5 +1456,54 @@
   font-weight: bold !important;
   min-width: 20px !important;
   text-align: center !important;
+}
+
+/* Efectividad de tipo en el chat */
+.chat-message .poke-effectiveness {
+  margin: 6px 0 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.chat-message .poke-eff {
+  padding: 4px 8px;
+  border-radius: 4px;
+  border-left: 4px solid #ffe082;
+  background: rgba(0, 0, 0, 0.28);
+  color: #fff8e1;
+  font-weight: 600;
+}
+
+.chat-message .poke-eff-mult {
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.chat-message .poke-eff-mega {
+  border-left-color: #ff5252;
+  background: rgba(183, 28, 28, 0.45);
+}
+
+.chat-message .poke-eff-super {
+  border-left-color: #ffb74d;
+  background: rgba(230, 81, 0, 0.4);
+}
+
+.chat-message .poke-eff-normal {
+  border-left-color: #ffe082;
+}
+
+.chat-message .poke-eff-resist,
+.chat-message .poke-eff-resist-hard {
+  border-left-color: #81d4fa;
+  background: rgba(2, 119, 189, 0.4);
+}
+
+.chat-message .poke-eff-immune,
+.chat-message .poke-eff-unknown {
+  border-left-color: #bdbdbd;
+  background: rgba(66, 66, 66, 0.45);
+  color: #eeeeee;
 }
 
